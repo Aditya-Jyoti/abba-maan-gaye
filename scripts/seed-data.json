@@ -1,0 +1,932 @@
+{
+  "trips": [
+    {
+      "slug": "western-ghats-2025",
+      "title": "Monsoon on the Western Ghats",
+      "stateId": "maharashtra",
+      "startDate": "2025-07-12",
+      "endDate": "2025-07-21",
+      "colorIndex": 0,
+      "coverPhoto": {
+        "caption": "Marine Drive at dusk"
+      },
+      "homeSlot": 1,
+      "stops": [
+        {
+          "slug": "mumbai",
+          "name": "Mumbai",
+          "placeKey": "mumbai",
+          "startDate": "2025-07-12",
+          "endDate": "2025-07-13",
+          "nights": 2,
+          "title": "Salt air and the first rain",
+          "dek": "The monsoon arrived the same afternoon we did, and the city didn't slow down for either of us.",
+          "quote": "Mumbai in July is loud, soaked and completely unbothered.",
+          "photos": [
+            {
+              "caption": "Marine Drive at dusk"
+            },
+            {
+              "caption": "Vada pav stall, Dadar"
+            },
+            {
+              "caption": "Gateway in drizzle"
+            },
+            {
+              "caption": "Open door, Western line"
+            },
+            {
+              "caption": "Bandra lanes"
+            },
+            {
+              "caption": "Chai at Colaba"
+            }
+          ],
+          "details": [
+            {
+              "label": "Stayed",
+              "value": "Colaba guesthouse"
+            },
+            {
+              "label": "Getting there",
+              "value": "Flight into BOM"
+            },
+            {
+              "label": "Weather",
+              "value": "27 C, heavy rain"
+            },
+            {
+              "label": "Don't miss",
+              "value": "Kala Ghoda on foot"
+            }
+          ],
+          "story": [
+            {
+              "type": "h",
+              "title": "Landing into the monsoon",
+              "kicker": "Day 1"
+            },
+            {
+              "type": "p",
+              "text": "We landed into a sky the colour of wet slate. Four of us, one shared umbrella that broke before we left the airport, and a plan that mostly consisted of eating. By the time the cab reached Marine Drive the first proper downpour had begun and the promenade emptied in about forty seconds, except for the chai sellers, who simply moved their stoves under the nearest awning and kept pouring."
+            },
+            {
+              "type": "side",
+              "text": "We dumped the bags at a guesthouse in Colaba and walked straight back out. Leopold Cafe was loud and full of steam. The Gateway of India was half hidden behind spray from the harbour wall, and every few minutes a wave would clear the railing and soak whoever was taking a selfie. Nobody minded. That is the thing about Mumbai in July: everyone is already wet, so nobody is in a hurry to stay dry.",
+              "photo": {
+                "caption": "Gateway in drizzle"
+              }
+            },
+            {
+              "type": "p",
+              "text": "Dinner was at a tiny Irani place near Kala Ghoda, bun maska and keema pav, then a long walk along the Queen's Necklace with the lights coming on in a curve all the way to Malabar Hill."
+            },
+            {
+              "type": "trio",
+              "photos": [
+                {
+                  "caption": "Marine Drive at dusk"
+                },
+                {
+                  "caption": "Bun maska, Kyani"
+                },
+                {
+                  "caption": "Queen's Necklace"
+                }
+              ]
+            },
+            {
+              "type": "h",
+              "title": "The train, the doors, the vada pav",
+              "kicker": "Day 2"
+            },
+            {
+              "type": "p",
+              "text": "The next morning we rode the local from Churchgate with the doors open, the way everyone does, holding the overhead bar and leaning out just enough to feel the rain. The trick is to stand on the side away from the platform, otherwise you get swept off at Dadar by a wall of office workers."
+            },
+            {
+              "type": "quote",
+              "text": "Mumbai in July is loud, soaked and completely unbothered."
+            },
+            {
+              "type": "sideL",
+              "text": "Outside Dadar station we ate vada pav standing up, dripping chutney onto our shoes. Then Bandra for the afternoon: graffiti lanes in Ranwar, a long sit on the rocks at Bandstand watching the sea throw itself at the sea link, and far too much coffee.",
+              "photo": {
+                "caption": "Vada pav stall, Dadar"
+              }
+            },
+            {
+              "type": "wide",
+              "photo": {
+                "caption": "Open door, Western line"
+              }
+            },
+            {
+              "type": "tip",
+              "text": "Buy a first-class day pass on the local. It costs a little more, the carriages are calmer, and you can hop on and off all day."
+            },
+            {
+              "type": "p",
+              "text": "We ended at Juhu, where the beach was almost empty and the bhel puri stall was not. It was the right place to start."
+            }
+          ],
+          "see": [
+            {
+              "name": "Marine Drive",
+              "line": "The sea-front curve, best at dusk when the lights come on",
+              "meta": "Free, 1-2 hrs"
+            },
+            {
+              "name": "Gateway of India",
+              "line": "Go early before the crowds, or in the rain for drama",
+              "meta": "Free, 30 min"
+            },
+            {
+              "name": "Bandra lanes",
+              "line": "Ranwar and Chapel Road murals, small cafes",
+              "meta": "Half day"
+            },
+            {
+              "name": "Kala Ghoda",
+              "line": "Galleries, bookshops and the old fort district",
+              "meta": "Half day"
+            }
+          ],
+          "eat": [
+            {
+              "name": "Vada pav",
+              "line": "Outside any station. Dadar is the classic.",
+              "price": "Rs 25"
+            },
+            {
+              "name": "Bun maska and chai",
+              "line": "An Irani cafe breakfast that takes an hour on purpose.",
+              "price": "Rs 80"
+            },
+            {
+              "name": "Bombay sandwich",
+              "line": "Grilled, layered, green chutney everywhere.",
+              "price": "Rs 120"
+            }
+          ],
+          "homeSlot": null
+        },
+        {
+          "slug": "lonavala",
+          "name": "Lonavala",
+          "placeKey": "lonavala",
+          "startDate": "2025-07-14",
+          "endDate": "2025-07-15",
+          "nights": 2,
+          "title": "Clouds you can walk through",
+          "dek": "Two hours up the expressway, the ghats swallowed the road and gave us back waterfalls.",
+          "quote": "The fog tore open for ten seconds and the whole valley was there.",
+          "photos": [
+            {
+              "caption": "Tiger's Leap in fog"
+            },
+            {
+              "caption": "Bhushi Dam steps"
+            },
+            {
+              "caption": "Chikki counter"
+            },
+            {
+              "caption": "Rajmachi trail"
+            },
+            {
+              "caption": "Ghat waterfall"
+            },
+            {
+              "caption": "Corn on the coals"
+            }
+          ],
+          "details": [
+            {
+              "label": "Stayed",
+              "value": "Hillside homestay"
+            },
+            {
+              "label": "Getting there",
+              "value": "Expressway, 2 hrs"
+            },
+            {
+              "label": "Weather",
+              "value": "22 C, fog & showers"
+            },
+            {
+              "label": "Don't miss",
+              "value": "Tiger's Leap at dawn"
+            }
+          ],
+          "story": [
+            {
+              "type": "h",
+              "title": "Up the ghats into the cloud",
+              "kicker": "Day 3"
+            },
+            {
+              "type": "p",
+              "text": "Somewhere past Khopoli the expressway climbs into the cloud and stays there. One minute you can see the trucks ahead, the next you are driving through milk. Lonavala in the monsoon is less a town than a weather system. Every ridge is streaming, every hairpin has a waterfall, and every waterfall has a family standing under it in their clothes."
+            },
+            {
+              "type": "side",
+              "text": "We checked into a hillside homestay run by an uncle who refused to let us leave without a second breakfast. Poha, then pakoras, then chai, then advice. The advice was mostly about which waterfalls were safe and which ones were for showing off. We nodded and then went to the showing-off ones anyway.",
+              "photo": {
+                "caption": "Homestay porch, morning"
+              }
+            },
+            {
+              "type": "duo",
+              "photos": [
+                {
+                  "caption": "Bhushi Dam steps"
+                },
+                {
+                  "caption": "Ghat waterfall"
+                }
+              ]
+            },
+            {
+              "type": "p",
+              "text": "Bhushi Dam is basically a giant staircase with a river running down it. You sit on the steps and the water pours over your legs. It is cold, slippery, absolutely packed and one of the most joyful places I have ever been. Someone's speaker was playing old Bollywood songs and half the dam was singing along."
+            },
+            {
+              "type": "h",
+              "title": "Tiger's Leap and the ten-second view",
+              "kicker": "Day 4"
+            },
+            {
+              "type": "p",
+              "text": "We walked out to Tiger's Leap at seven and saw absolutely nothing for twenty minutes. Just white. Then the fog tore open for maybe ten seconds and the whole valley was there, impossibly green, a river at the bottom, before it closed again. We stood there for another half hour hoping it would happen twice. It did not."
+            },
+            {
+              "type": "quote",
+              "text": "The fog tore open for ten seconds and the whole valley was there."
+            },
+            {
+              "type": "sideL",
+              "text": "The afternoon was Karla Caves, two thousand years old, cut straight into the cliff. The big chaitya hall has a wooden ceiling that is somehow still there, and the inside is so quiet after the noise of the road that we all started whispering without meaning to.",
+              "photo": {
+                "caption": "Karla Caves hall"
+              }
+            },
+            {
+              "type": "trio",
+              "photos": [
+                {
+                  "caption": "Corn on the coals"
+                },
+                {
+                  "caption": "Chikki counter"
+                },
+                {
+                  "caption": "Rajmachi trail"
+                }
+              ]
+            },
+            {
+              "type": "p",
+              "text": "On the way back we stopped for bhutta roasted on coals with lime and chilli rubbed on it, and bought far too much chikki. Maganlal is the famous one. Every shop claims to be the original."
+            },
+            {
+              "type": "wide",
+              "photo": {
+                "caption": "Tiger's Leap in fog"
+              }
+            },
+            {
+              "type": "tip",
+              "text": "Go to the viewpoints at sunrise on a weekday. By ten the road to Tiger's Leap is a parking lot."
+            }
+          ],
+          "see": [
+            {
+              "name": "Tiger's Leap",
+              "line": "A sheer cliff viewpoint, best when the fog breaks",
+              "meta": "Free, 1 hr"
+            },
+            {
+              "name": "Bhushi Dam",
+              "line": "Sit on the overflowing steps. Wear shoes you can lose.",
+              "meta": "Free, 2 hrs"
+            },
+            {
+              "name": "Karla Caves",
+              "line": "Buddhist rock-cut halls from the 2nd century BC",
+              "meta": "Rs 25, 1-2 hrs"
+            },
+            {
+              "name": "Rajmachi Fort",
+              "line": "A muddy, gorgeous monsoon trek to an old fort",
+              "meta": "Full day"
+            }
+          ],
+          "eat": [
+            {
+              "name": "Bhutta",
+              "line": "Corn on coals with lime and chilli salt.",
+              "price": "Rs 40"
+            },
+            {
+              "name": "Chikki",
+              "line": "Peanut and jaggery brittle. Try the chocolate one once.",
+              "price": "Rs 150/box"
+            },
+            {
+              "name": "Pakoras and chai",
+              "line": "At any roadside shack when it starts raining. It will.",
+              "price": "Rs 60"
+            }
+          ],
+          "homeSlot": 3
+        },
+        {
+          "slug": "pune",
+          "name": "Pune",
+          "placeKey": "pune",
+          "startDate": "2025-07-16",
+          "endDate": "2025-07-17",
+          "nights": 2,
+          "title": "Old wadas, new coffee",
+          "dek": "A city of Peshwa gateways and third-wave cafes, separated by about one auto ride.",
+          "quote": "The lanes are narrow enough that the rain only reaches you in stripes.",
+          "photos": [
+            {
+              "caption": "Shaniwar Wada gate"
+            },
+            {
+              "caption": "Koregaon Park cafe"
+            },
+            {
+              "caption": "Misal pav"
+            },
+            {
+              "caption": "Sinhagad ridge"
+            },
+            {
+              "caption": "Tulshibaug market"
+            },
+            {
+              "caption": "Peth doorway"
+            }
+          ],
+          "details": [
+            {
+              "label": "Stayed",
+              "value": "Boutique hotel, Deccan"
+            },
+            {
+              "label": "Getting there",
+              "value": "Road from Lonavala, 1.5 hrs"
+            },
+            {
+              "label": "Weather",
+              "value": "24 C, light rain"
+            },
+            {
+              "label": "Don't miss",
+              "value": "Misal at a peth cafe"
+            }
+          ],
+          "story": [
+            {
+              "type": "h",
+              "title": "Old city, slow morning",
+              "kicker": "Day 5"
+            },
+            {
+              "type": "p",
+              "text": "Pune felt like exhaling. After two days of waterfalls we wanted something with a roof. We spent the first morning around Shaniwar Wada and the old peths, where the lanes are narrow enough that the rain only reaches you in stripes, and every second doorway has a carved wooden frame older than our grandparents."
+            },
+            {
+              "type": "side",
+              "text": "Shaniwar Wada is mostly walls and gates now. The palace inside burned down in 1828, but the Delhi Gate with its elephant spikes is still there, and the gardens are a good place to sit and listen to a guide tell the ghost story with great enthusiasm.",
+              "photo": {
+                "caption": "Shaniwar Wada gate"
+              }
+            },
+            {
+              "type": "trio",
+              "photos": [
+                {
+                  "caption": "Tulshibaug market"
+                },
+                {
+                  "caption": "Peth doorway"
+                },
+                {
+                  "caption": "Dagdusheth temple"
+                }
+              ]
+            },
+            {
+              "type": "p",
+              "text": "Tulshibaug market sells everything: brass lamps, plastic buckets, wedding garlands, a very small and very angry parrot. We bought a set of steel tumblers we did not need and carried them for the rest of the trip."
+            },
+            {
+              "type": "quote",
+              "text": "The lanes are narrow enough that the rain only reaches you in stripes."
+            },
+            {
+              "type": "h",
+              "title": "Misal, coffee, Sinhagad",
+              "kicker": "Day 6"
+            },
+            {
+              "type": "sideL",
+              "text": "The real reason to come, though, is breakfast. Misal pav with a fiery tarri, eaten at a steel table while the cook argues cricket with the regulars. We went back twice. The second time he gave us extra farsan without asking, which we took as acceptance.",
+              "photo": {
+                "caption": "Misal pav"
+              }
+            },
+            {
+              "type": "p",
+              "text": "In the afternoon we drove up to Sinhagad fort. The road is all switchbacks and the top was in cloud, but the stalls at the summit sell kanda bhaji and thick curd in clay pots, and that is reason enough. The evening was Koregaon Park, very serious coffee and a long argument about whether Pune or Mumbai has the better food. Pune won, narrowly."
+            },
+            {
+              "type": "wide",
+              "photo": {
+                "caption": "Sinhagad ridge"
+              }
+            },
+            {
+              "type": "tip",
+              "text": "Do the peths on foot with a local walking tour. They know which courtyards you are allowed to step into."
+            }
+          ],
+          "see": [
+            {
+              "name": "Shaniwar Wada",
+              "line": "The Peshwa fort walls and the famous Delhi Gate",
+              "meta": "Rs 25, 1 hr"
+            },
+            {
+              "name": "Old peths",
+              "line": "Wooden wadas, temples and markets in the old city",
+              "meta": "Half day"
+            },
+            {
+              "name": "Sinhagad Fort",
+              "line": "A short drive and climb to a misty hilltop fort",
+              "meta": "Half day"
+            },
+            {
+              "name": "Aga Khan Palace",
+              "line": "Gardens and the Gandhi memorial",
+              "meta": "Rs 25, 1 hr"
+            }
+          ],
+          "eat": [
+            {
+              "name": "Misal pav",
+              "line": "Spicy sprout curry with a bread roll. Ask for extra tarri.",
+              "price": "Rs 90"
+            },
+            {
+              "name": "Kanda bhaji",
+              "line": "Onion fritters at the top of Sinhagad, with curd.",
+              "price": "Rs 50"
+            },
+            {
+              "name": "Mastani",
+              "line": "A milkshake so thick it needs a spoon.",
+              "price": "Rs 120"
+            }
+          ],
+          "homeSlot": null
+        },
+        {
+          "slug": "mahabaleshwar",
+          "name": "Mahabaleshwar",
+          "placeKey": "mahabaleshwar",
+          "startDate": "2025-07-18",
+          "endDate": "2025-07-19",
+          "nights": 2,
+          "title": "Strawberries in the mist",
+          "dek": "The plateau was quieter than we expected, and greener than anywhere we've been.",
+          "quote": "We had Arthur's Seat to ourselves and the sound of water everywhere.",
+          "photos": [
+            {
+              "caption": "Arthur's Seat"
+            },
+            {
+              "caption": "Farm-shed jam jars"
+            },
+            {
+              "caption": "Venna Lake boats"
+            },
+            {
+              "caption": "Pratapgad steps"
+            },
+            {
+              "caption": "Mist over the plateau"
+            },
+            {
+              "caption": "Wilson Point"
+            }
+          ],
+          "details": [
+            {
+              "label": "Stayed",
+              "value": "Old colonial bungalow"
+            },
+            {
+              "label": "Getting there",
+              "value": "Via Wai, 3 hrs"
+            },
+            {
+              "label": "Weather",
+              "value": "18 C, constant mist"
+            },
+            {
+              "label": "Don't miss",
+              "value": "The Pratapgad road"
+            }
+          ],
+          "story": [
+            {
+              "type": "h",
+              "title": "The plateau in the off season",
+              "kicker": "Day 7"
+            },
+            {
+              "type": "p",
+              "text": "Monsoon is off-season up here, which means half the viewpoints are hidden in cloud and none of the crowds turn up. The drive in through Wai and Pasarni ghat is the kind of road where you stop every ten minutes because the view is ridiculous, then stop again because the view is gone and there is a waterfall instead."
+            },
+            {
+              "type": "side",
+              "text": "We stayed in an old colonial bungalow with a fireplace, a dog called Biscuit and a caretaker who made hot chocolate at nine every night whether you asked or not. It rained for fourteen hours straight. Nobody complained.",
+              "photo": {
+                "caption": "Bungalow fireplace"
+              }
+            },
+            {
+              "type": "duo",
+              "photos": [
+                {
+                  "caption": "Mist over the plateau"
+                },
+                {
+                  "caption": "Venna Lake boats"
+                }
+              ]
+            },
+            {
+              "type": "p",
+              "text": "We had Arthur's Seat to ourselves, a cold wind coming up off the Savitri valley and the sound of water everywhere. Venna Lake had exactly one boat out, rowed by a very determined couple in raincoats. We hired the second one and got lost in fog about thirty metres from the jetty."
+            },
+            {
+              "type": "quote",
+              "text": "We had Arthur's Seat to ourselves and the sound of water everywhere."
+            },
+            {
+              "type": "h",
+              "title": "Jam, cream and the Pratapgad road",
+              "kicker": "Day 8"
+            },
+            {
+              "type": "sideL",
+              "text": "Strawberry season is long gone by July, but the farm sheds still sell jam and thick strawberry cream, and we were not about to say no. Mapro garden was open and bright pink. We bought jars for every relative and ate one of them in the car.",
+              "photo": {
+                "caption": "Farm-shed jam jars"
+              }
+            },
+            {
+              "type": "p",
+              "text": "The drive down to Pratapgad the next morning was the most beautiful road of the whole trip. The fort itself sits on a ridge with clouds moving through the walls, and there are about five hundred steps, each one wet. At the top a man sold us roasted peanuts in paper cones and told us the whole Shivaji and Afzal Khan story with sound effects."
+            },
+            {
+              "type": "trio",
+              "photos": [
+                {
+                  "caption": "Pratapgad steps"
+                },
+                {
+                  "caption": "Wilson Point"
+                },
+                {
+                  "caption": "Strawberry cream"
+                }
+              ]
+            },
+            {
+              "type": "wide",
+              "photo": {
+                "caption": "Arthur's Seat"
+              }
+            },
+            {
+              "type": "tip",
+              "text": "Carry a proper rain jacket, not an umbrella. The wind on the viewpoints turns umbrellas inside out in seconds."
+            }
+          ],
+          "see": [
+            {
+              "name": "Arthur's Seat",
+              "line": "The big cliff viewpoint over the Savitri valley",
+              "meta": "Free, 1 hr"
+            },
+            {
+              "name": "Pratapgad Fort",
+              "line": "Shivaji's ridge fort, 500 wet steps to the top",
+              "meta": "Half day"
+            },
+            {
+              "name": "Venna Lake",
+              "line": "Rowing boats and horse rides on the shore",
+              "meta": "Rs 300, 1 hr"
+            },
+            {
+              "name": "Lingmala Falls",
+              "line": "A long drop off the plateau, roaring in July",
+              "meta": "1-2 hrs"
+            }
+          ],
+          "eat": [
+            {
+              "name": "Strawberry cream",
+              "line": "Fresh cream and fruit, even out of season somehow.",
+              "price": "Rs 150"
+            },
+            {
+              "name": "Corn pattice",
+              "line": "Fried and crisp, from the market lane.",
+              "price": "Rs 60"
+            },
+            {
+              "name": "Hot chocolate",
+              "line": "Ask your homestay. They will make it.",
+              "price": "Free"
+            }
+          ],
+          "homeSlot": null
+        },
+        {
+          "slug": "alibaug",
+          "name": "Alibaug",
+          "placeKey": "alibaug",
+          "startDate": "2025-07-20",
+          "endDate": "2025-07-21",
+          "nights": 2,
+          "title": "Ending at the edge of the sea",
+          "dek": "Down from the ghats to the Konkan coast, and a ferry back to where it all began.",
+          "quote": "The rain held off long enough for an actual sunset.",
+          "photos": [
+            {
+              "caption": "Kolaba Fort, low tide"
+            },
+            {
+              "caption": "Ferry from the Gateway"
+            },
+            {
+              "caption": "Fish thali"
+            },
+            {
+              "caption": "Varsoli beach"
+            },
+            {
+              "caption": "Kihim sunset"
+            },
+            {
+              "caption": "Coconut grove stay"
+            }
+          ],
+          "details": [
+            {
+              "label": "Stayed",
+              "value": "Cottage near Kihim"
+            },
+            {
+              "label": "Getting there",
+              "value": "Road from Mahabaleshwar, 4 hrs"
+            },
+            {
+              "label": "Weather",
+              "value": "28 C, breaks of sun"
+            },
+            {
+              "label": "Don't miss",
+              "value": "Fort walk at low tide"
+            }
+          ],
+          "story": [
+            {
+              "type": "h",
+              "title": "Down to the Konkan coast",
+              "kicker": "Day 9"
+            },
+            {
+              "type": "p",
+              "text": "After a week in the hills the sea felt enormous. The road down from the plateau drops through Mahad and then flattens into rice fields so green they look fake, with egrets standing in every single one like they were placed there by a set designer."
+            },
+            {
+              "type": "side",
+              "text": "We stayed in a cottage near Kihim with a coconut grove for a garden and a hammock that four grown men are not supposed to sit in at once. We found that out. The owner's mother cooked lunch every day and refused to tell us what was in the sol kadhi.",
+              "photo": {
+                "caption": "Coconut grove stay"
+              }
+            },
+            {
+              "type": "p",
+              "text": "In the afternoon we walked out to Kolaba Fort at low tide, ankle-deep across the sand bar, timing the walk back so the sea did not cut us off. Inside there is a temple, a freshwater well and a lot of crabs who did not want visitors."
+            },
+            {
+              "type": "trio",
+              "photos": [
+                {
+                  "caption": "Kolaba Fort, low tide"
+                },
+                {
+                  "caption": "Fish thali"
+                },
+                {
+                  "caption": "Varsoli beach"
+                }
+              ]
+            },
+            {
+              "type": "quote",
+              "text": "The rain held off long enough for an actual sunset."
+            },
+            {
+              "type": "h",
+              "title": "Last light and the ferry home",
+              "kicker": "Day 10"
+            },
+            {
+              "type": "sideL",
+              "text": "The fish thali at a little place on the main road ruined every other fish thali for us. Surmai fry, prawn curry, rice bhakri and the pink sol kadhi again. We ordered a second round and then lay in the hammock for two hours, carefully this time.",
+              "photo": {
+                "caption": "Fish thali"
+              }
+            },
+            {
+              "type": "p",
+              "text": "On the last evening the rain held off long enough for an actual sunset at Kihim, the first one of the whole trip. The next morning we took the ferry from Mandwa back across the harbour to the Gateway, the city we had started in, slightly drier this time and about three kilos heavier each."
+            },
+            {
+              "type": "wide",
+              "photo": {
+                "caption": "Kihim sunset"
+              }
+            },
+            {
+              "type": "tip",
+              "text": "Take the Mandwa ferry instead of the road from Mumbai. It is an hour on the water instead of three in traffic."
+            }
+          ],
+          "see": [
+            {
+              "name": "Kolaba Fort",
+              "line": "Walk out across the sand at low tide only",
+              "meta": "Rs 25, 2 hrs"
+            },
+            {
+              "name": "Kihim beach",
+              "line": "Quiet, wide and lined with coconut groves",
+              "meta": "Free"
+            },
+            {
+              "name": "Varsoli beach",
+              "line": "Close to town, good for an evening walk",
+              "meta": "Free"
+            },
+            {
+              "name": "Mandwa ferry",
+              "line": "The fun way to and from Mumbai",
+              "meta": "Rs 250, 1 hr"
+            }
+          ],
+          "eat": [
+            {
+              "name": "Fish thali",
+              "line": "Surmai fry, prawn curry, sol kadhi. Get two.",
+              "price": "Rs 350"
+            },
+            {
+              "name": "Sol kadhi",
+              "line": "Pink kokum and coconut drink. Cooling and addictive.",
+              "price": "Rs 40"
+            },
+            {
+              "name": "Tender coconut",
+              "line": "From the grove, opened with one swing.",
+              "price": "Rs 50"
+            }
+          ],
+          "homeSlot": null
+        }
+      ]
+    },
+    {
+      "slug": "caves-kitchens",
+      "title": "Caves & Kitchens",
+      "stateId": "maharashtra",
+      "startDate": "2024-01-01",
+      "endDate": null,
+      "colorIndex": 1,
+      "coverPhoto": {
+        "caption": "Ellora caves"
+      },
+      "homeSlot": 2,
+      "stops": [
+        {
+          "slug": "nashik",
+          "name": "Nashik",
+          "placeKey": "nashik"
+        },
+        {
+          "slug": "aurangabad",
+          "name": "Aurangabad",
+          "placeKey": "aurangabad"
+        },
+        {
+          "slug": "ellora",
+          "name": "Ellora",
+          "placeKey": "ellora"
+        },
+        {
+          "slug": "ajanta",
+          "name": "Ajanta",
+          "placeKey": "ajanta"
+        }
+      ]
+    },
+    {
+      "slug": "desert-winter",
+      "title": "Desert Winter",
+      "stateId": "rajasthan",
+      "startDate": "2024-12-01",
+      "endDate": null,
+      "colorIndex": 0,
+      "coverPhoto": {
+        "caption": "Jaisalmer fort walls"
+      },
+      "homeSlot": 5,
+      "stops": [
+        {
+          "slug": "jaipur",
+          "name": "Jaipur",
+          "placeKey": "jaipur"
+        },
+        {
+          "slug": "jodhpur",
+          "name": "Jodhpur",
+          "placeKey": "jodhpur",
+          "title": "The blue city",
+          "photos": [
+            {
+              "caption": "Blue lanes, Jodhpur"
+            }
+          ],
+          "homeSlot": 4
+        },
+        {
+          "slug": "jaisalmer",
+          "name": "Jaisalmer",
+          "placeKey": "jaisalmer",
+          "photos": [
+            {
+              "caption": "Jaisalmer fort walls"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "backwaters",
+      "title": "Backwaters",
+      "stateId": "kerala",
+      "startDate": "2024-03-01",
+      "endDate": null,
+      "colorIndex": 0,
+      "coverPhoto": {
+        "caption": "Backwater houseboat"
+      },
+      "homeSlot": 6,
+      "stops": [
+        {
+          "slug": "kochi",
+          "name": "Kochi",
+          "placeKey": "kochi"
+        },
+        {
+          "slug": "alleppey",
+          "name": "Alleppey",
+          "placeKey": "alleppey",
+          "photos": [
+            {
+              "caption": "Backwater houseboat"
+            }
+          ]
+        },
+        {
+          "slug": "munnar",
+          "name": "Munnar",
+          "placeKey": "munnar"
+        }
+      ]
+    }
+  ]
+}

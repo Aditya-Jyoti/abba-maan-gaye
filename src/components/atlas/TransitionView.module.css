@@ -1,0 +1,133 @@
+.section {
+  position: relative;
+  height: 100vh;
+  min-height: 640px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 24px;
+  overflow: hidden;
+  cursor: pointer;
+  background-color: oklch(0.74 0.075 192);
+}
+
+.titleRow {
+  display: flex;
+  justify-content: center;
+  animation: ghFade 0.4s ease both;
+}
+
+.title {
+  padding: 8px 18px;
+  background: #fffdf7;
+  box-shadow: 0 8px 18px -10px rgba(20, 50, 50, 0.5);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 18px;
+  transform: rotate(-1deg);
+}
+
+.stage {
+  height: 400px;
+  position: relative;
+}
+
+.track {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1040px;
+  margin-left: -520px;
+  height: 0;
+  transform-origin: 0 50%;
+  transition: transform 1.4s cubic-bezier(0.7, 0, 0.2, 1);
+  animation: ghIn 0.4s ease both;
+}
+
+.trackLine {
+  position: absolute;
+  left: -120px;
+  top: -80px;
+  overflow: visible;
+}
+
+.node {
+  position: absolute;
+  transition: opacity 0.8s;
+}
+
+.nodeCard {
+  position: absolute;
+  left: -34px;
+  top: -40px;
+  width: 68px;
+  padding: 4px 4px 0;
+  background: #fffdf7;
+  box-shadow: 0 6px 12px -4px rgba(20, 50, 50, 0.5);
+  transform: rotate(-3deg);
+}
+
+.nodeDate {
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 11px;
+  color: #c4532f;
+}
+
+.nodeName {
+  position: absolute;
+  top: 52px;
+  left: 0;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 20px;
+  color: #1f3a3a;
+}
+
+.footer {
+  height: 120px;
+  display: flex;
+  justify-content: center;
+}
+
+.heading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  animation: ghFade 0.5s 0.5s ease both;
+}
+
+.kicker {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #fffaf0;
+}
+
+.stopTitle {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(28px, 6vw, 50px);
+  line-height: 1.1;
+  text-align: center;
+  padding: 0 16px;
+  color: #1f3a3a;
+}
+
+/* Paper-coloured circle that opens into the post. */
+.paper {
+  position: absolute;
+  inset: 0;
+  background: #f1e4cc;
+  clip-path: circle(0% at 50% 50%);
+  animation: ghPaper 0.65s 1.85s cubic-bezier(0.6, 0, 0.3, 1) forwards;
+  pointer-events: none;
+}

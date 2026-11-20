@@ -1,0 +1,15 @@
+.post {
+  transition:
+    opacity 0.3s ease,
+    translate 0.3s ease;
+}
+
+/* Sea-coloured circle that sweeps over a post on the way back to the map. */
+.wipe {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  pointer-events: none;
+  background: oklch(0.74 0.075 192);
+  transition: clip-path 0.38s cubic-bezier(0.6, 0, 0.3, 1);
+}
