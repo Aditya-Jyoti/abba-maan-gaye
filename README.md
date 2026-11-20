@@ -65,7 +65,7 @@ Compose starts three services:
 | --------- | ------------ |
 | `db`      | Postgres, data kept in the `pgdata` volume, port bound to `127.0.0.1` only |
 | `migrate` | Applies pending migrations, then exits |
-| `app`     | The Next.js server; starts once `migrate` succeeds |
+| `app`     | The Next.js server; starts once `migrate` succeeds. Uploaded photos are kept in the `media` volume |
 
 Useful commands:
 
@@ -73,7 +73,7 @@ Useful commands:
 docker compose logs -f app       # follow app logs
 docker compose up -d --build     # redeploy after pulling changes (migrations run automatically)
 docker compose down              # stop (data is kept)
-docker compose down -v           # stop and delete the database volume
+docker compose down -v           # stop and delete the database and photo volumes
 ```
 
 To serve it on a domain, put a reverse proxy that handles HTTPS (Caddy, nginx, Traefik) in front of `APP_PORT`.

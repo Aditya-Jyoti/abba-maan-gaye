@@ -40,6 +40,8 @@ services:
     environment:
       DATABASE_URL: *database-url
       COOKIE_SECURE: ${COOKIE_SECURE:-}
+    volumes:
+      - media:/data/media
     ports:
       - "${APP_PORT:-3000}:3000"
     depends_on:
@@ -48,3 +50,4 @@ services:
 
 volumes:
   pgdata:
+  media:

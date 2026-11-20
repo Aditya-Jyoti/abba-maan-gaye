@@ -37,7 +37,10 @@ CMD ["node", "scripts/migrate.mjs"]
 FROM base AS runner
 ENV NODE_ENV=production \
     PORT=3000 \
-    HOSTNAME=0.0.0.0
+    HOSTNAME=0.0.0.0 \
+    MEDIA_DIR=/data/media
+# Uploaded photos. Created here so the mounted volume starts out owned by the node user.
+RUN mkdir -p /data/media && chown node:node /data/media
 COPY --from=builder --chown=node:node /app/public ./public
 COPY --from=builder --chown=node:node /app/.next/standalone ./
 COPY --from=builder --chown=node:node /app/.next/static ./.next/static
