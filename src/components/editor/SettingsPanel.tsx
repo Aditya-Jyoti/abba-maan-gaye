@@ -17,7 +17,7 @@ import {
 } from "@/lib/cms/actions";
 import { slugify } from "@/lib/cms/content";
 import type { EditorStop, StopSettings, TripSettings } from "@/lib/cms/queries";
-import { map, TRIP_COLORS } from "@/lib/map";
+import { HOME_SLOTS, map, TRIP_COLORS } from "@/lib/map";
 import { stopEditHref } from "@/lib/routes";
 import { Drawer } from "./Drawer";
 import styles from "./editor.module.css";
@@ -356,7 +356,7 @@ function SlotSelect({ value, onChange }: { value: number | null; onChange: (v: n
   return (
     <select className={styles.input} value={value ?? ""} onChange={(e) => onChange(e.target.value ? Number(e.target.value) : null)}>
       <option value="">Not shown</option>
-      {[1, 2, 3, 4, 5, 6].map((n) => (
+      {Array.from({ length: HOME_SLOTS }, (_, i) => i + 1).map((n) => (
         <option key={n} value={n}>
           Card {n}
         </option>

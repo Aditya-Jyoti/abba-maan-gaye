@@ -1,21 +1,7 @@
-/* Keyframes from the original design (design/source/template.html). */
-@keyframes ghLift{from{transform:translateY(0)}to{transform:translateY(-11px)}}
-@keyframes ghFade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-@keyframes ghIn{from{opacity:0}to{opacity:1}}
-@keyframes ghMapIn{from{opacity:0;transform:translateY(24px) scale(.96)}to{opacity:1;transform:none}}
-@keyframes ghPop{0%{opacity:0;transform:translate(-50%,-50%) scale(.3)}70%{transform:translate(-50%,-50%) scale(1.08)}100%{opacity:1;transform:translate(-50%,-50%) scale(1)}}
-@keyframes ghDrop{0%{opacity:0;translate:0 -50px;scale:1.1}70%{opacity:1;translate:0 4px;scale:.98}100%{opacity:1;translate:0 0;scale:1}}
-@keyframes ghStamp{0%{opacity:0;transform:scale(1.8) rotate(-30deg)}60%{opacity:1;transform:scale(.92) rotate(-6deg)}100%{opacity:1;transform:scale(1) rotate(-9deg)}}
+/* Keyframes used from inline styles (the sea and the loader), from the original design.
+   CSS modules scope keyframe names, so each module defines the ones it uses itself. */
 @keyframes ghBoat{0%,100%{translate:0 0;rotate:-4deg}50%{translate:0 -3px;rotate:4deg}}
 @keyframes ghSail{0%{offset-distance:0%;opacity:0}6%{opacity:1}94%{opacity:1}100%{offset-distance:100%;opacity:0}}
-@keyframes ghGrow{0%{transform:translate(0px,0px) scale(1) rotate(0deg)}45%{transform:translate(calc(var(--tx) * .45),calc(var(--ty) * .45 - 40px)) scale(calc(1 + (var(--k) - 1) * .45)) rotate(-4deg)}100%{transform:translate(var(--tx),var(--ty)) scale(var(--k)) rotate(0deg)}}
-@keyframes ghShrink{0%{transform:translate(var(--tx),var(--ty)) scale(var(--k)) rotate(0deg)}55%{transform:translate(calc(var(--tx) * .45),calc(var(--ty) * .45 - 30px)) scale(calc(1 + (var(--k) - 1) * .45)) rotate(3deg)}100%{transform:translate(0px,0px) scale(1) rotate(0deg)}}
-@keyframes ghDepth{0%{transform:translateY(calc(var(--m) * 4px))}45%{transform:translateY(calc(var(--m) * 10px))}100%{transform:translateY(calc(var(--m) * 6px / var(--k)))}}
-@keyframes ghDepthOut{0%{transform:translateY(calc(var(--m) * 6px / var(--k)))}55%{transform:translateY(calc(var(--m) * 9px))}100%{transform:translateY(calc(var(--m) * 4px))}}
-@keyframes ghOut{from{opacity:1}to{opacity:0}}
-@keyframes ghStampS{0%{opacity:0;scale:1.8}60%{opacity:1;scale:.92}100%{opacity:1;scale:1}}
 @keyframes ghLoad{to{rotate:360deg}}
-@keyframes ghPaper{to{clip-path:circle(80% at 50% 50%)}}
 @keyframes ghDrift{from{translate:-18px 0}to{translate:18px 0}}
 @keyframes ghSpout{0%,60%,100%{opacity:0;transform:translateY(4px) scale(.6)}70%,85%{opacity:1;transform:none}}
-@keyframes ghPulse{0%{transform:scale(.6);opacity:.9}100%{transform:scale(1.6);opacity:0}}

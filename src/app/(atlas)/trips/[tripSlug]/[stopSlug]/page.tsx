@@ -12,7 +12,7 @@ type Params = PageProps<"/trips/[tripSlug]/[stopSlug]">["params"];
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const { tripSlug, stopSlug } = await params;
-  await connection();
+  // getStopPage is cached, so the title doesn't need a request of its own.
   const page = await getStopPage(tripSlug, stopSlug);
   if (!page) return { title: site.name };
   return {

@@ -1,4 +1,6 @@
 .section {
+  /* How much the unzoomed track shrinks to fit narrow screens. */
+  --fit: 1;
   position: relative;
   height: 100vh;
   min-height: 640px;
@@ -32,22 +34,21 @@
   position: relative;
 }
 
+/* A point at the middle of the stage; nodes are placed around it. */
 .track {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 1040px;
-  margin-left: -520px;
+  width: 0;
   height: 0;
-  transform-origin: 0 50%;
+  transform-origin: 0 0;
+  will-change: transform;
   transition: transform 1.4s cubic-bezier(0.7, 0, 0.2, 1);
   animation: ghIn 0.4s ease both;
 }
 
 .trackLine {
   position: absolute;
-  left: -120px;
-  top: -80px;
   overflow: visible;
 }
 
@@ -83,11 +84,33 @@
   top: 52px;
   left: 0;
   transform: translateX(-50%);
+  transition: opacity 0.4s;
   white-space: nowrap;
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 20px;
   color: #1f3a3a;
+}
+
+/* Vertical timeline: names beside the polaroids, on the side away from the line. */
+.nodeNameLeft,
+.nodeNameRight {
+  position: absolute;
+  top: -14px;
+  transition: opacity 0.4s;
+  white-space: nowrap;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 20px;
+  color: #1f3a3a;
+}
+
+.nodeNameLeft {
+  right: 46px;
+}
+
+.nodeNameRight {
+  left: 46px;
 }
 
 .footer {
@@ -128,6 +151,46 @@
   inset: 0;
   background: #f1e4cc;
   clip-path: circle(0% at 50% 50%);
-  animation: ghPaper 0.65s 1.85s cubic-bezier(0.6, 0, 0.3, 1) forwards;
+  /* Longhands: a var() inside the shorthand stops the module from scoping the name. */
+  animation-name: ghPaper;
+  animation-duration: var(--paper-ms, 0.65s);
+  animation-delay: var(--paper-delay, 1.85s);
+  animation-timing-function: cubic-bezier(0.6, 0, 0.3, 1);
+  animation-fill-mode: forwards;
   pointer-events: none;
 }
+
+@media (max-width: 1100px) {
+  .section { --fit: 0.8; }
+}
+
+@media (max-width: 899px) {
+  .section { --fit: 0.62; }
+}
+
+@media (max-width: 680px) {
+  .section { --fit: 0.5; }
+}
+
+@media (max-width: 520px) {
+  .section { --fit: 0.34; }
+}
+
+/* A phone on its side: everything a bit smaller so it fits the short screen. */
+@media (orientation: landscape) and (max-height: 559px) {
+  .section {
+    min-height: 0;
+    gap: 4px;
+  }
+
+  /* scale doesn't shrink the box, so the height is set for the scaled size. */
+  .stage {
+    height: 180px;
+    scale: 0.7;
+  }
+}
+
+/* Keyframes are scoped to this module, so the ones it uses are defined here. */
+@keyframes ghFade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes ghIn{from{opacity:0}to{opacity:1}}
+@keyframes ghPaper{to{clip-path:circle(80% at 50% 50%)}}

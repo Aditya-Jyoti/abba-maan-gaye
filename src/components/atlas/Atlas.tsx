@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useCallback, useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { Loader } from "@/components/map/Loader";
 import { findStop } from "@/lib/atlas";
 import type { AtlasData } from "@/lib/content";
@@ -9,7 +9,7 @@ import { parseRoute, type Route } from "@/lib/routes";
 import styles from "./Atlas.module.css";
 import { useReady, useViewport } from "./hooks";
 import { MapScene } from "./MapScene";
-import { TransitionView } from "./TransitionView";
+import { PAPER_MS, TRACK_PAN_MS, TransitionView } from "./TransitionView";
 
 type View = "india" | "state" | "transition" | "blog" | "other";
 
@@ -19,27 +19,38 @@ export type Scene = {
   stateId: string | null;
   /** The stop the timeline transition is heading to. */
   stop: { tripSlug: string; stopSlug: string } | null;
+  /** When switching dates within a trip, the stop being left: the timeline pans from it. */
+  fromSlug: string | null;
+  /** When the timeline's paper circle starts opening, in ms after it appears. */
+  paperDelay: number;
+  /** A sea-coloured circle growing from this point (viewport px) is covering the post. */
+  wipe: { x: number; y: number } | null;
   /** State view is animating back out to India. */
   leaving: boolean;
   /** Pins are fading out before the timeline transition. */
   opening: boolean;
   /** The post is fading out. */
   exiting: boolean;
-  /** The sea-coloured wipe is covering the post on the way back to the map. */
-  toMap: boolean;
   /** Arrived at India from the state view (shortens some entrance delays). */
   back: boolean;
   /** Timeline transition phase: 0 title, 1 track, 2 zoomed onto the stop. */
   phase: 0 | 1 | 2;
 };
 
-const CALM = { leaving: false, opening: false, exiting: false, toMap: false };
+const CALM = { leaving: false, opening: false, exiting: false, wipe: null };
 
 // Timings from the design, in ms.
 const STATE_EXIT = 900;
-const WIPE = 380;
+/** Matches the .wipe animation in Atlas.module.css. */
+const WIPE = 450;
 const PINS_OUT = 260;
 const POST_SWAP = 300;
+// Map to post: the timeline appears once the pins are gone, then zooms onto the stop.
+const ZOOM_AT = 740;
+const PAPER_AT = 1850;
+// Switching dates: once the wipe covers the post, the timeline pans to the new date.
+const PAN_AT = 50;
+const DATE_PAPER_AT = PAN_AT + TRACK_PAN_MS - 150;
 
 function resolve(route: Route, data: AtlasData): Route {
   if (route.kind === "state" && !data.visited.some((v) => v.stateId === route.stateId)) return { kind: "other" };
@@ -49,7 +60,16 @@ function resolve(route: Route, data: AtlasData): Route {
 }
 
 function initialScene(route: Route, data: AtlasData): Scene {
-  const base: Scene = { view: "india", stateId: null, stop: null, ...CALM, back: false, phase: 0 };
+  const base: Scene = {
+    view: "india",
+    stateId: null,
+    stop: null,
+    fromSlug: null,
+    paperDelay: PAPER_AT,
+    ...CALM,
+    back: false,
+    phase: 0,
+  };
   switch (route.kind) {
     case "state":
       return { ...base, view: "state", stateId: route.stateId };
@@ -77,6 +97,20 @@ export function Atlas({ data, sea, children }: { data: AtlasData; sea: ReactNode
   }, []);
   const set = useCallback((patch: Partial<Scene>) => setScene((s) => ({ ...s, ...patch })), []);
 
+  // Where the last click or tap landed, so a wipe can grow from the link that was pressed.
+  const lastPointer = useRef<{ x: number; y: number; at: number } | null>(null);
+  useEffect(() => {
+    const onDown = (e: PointerEvent) => (lastPointer.current = { x: e.clientX, y: e.clientY, at: performance.now() });
+    window.addEventListener("pointerdown", onDown, true);
+    return () => window.removeEventListener("pointerdown", onDown, true);
+  }, []);
+  /** The recent click position, or `fallback` (fractions of the viewport) after a keyboard or history navigation. */
+  const wipeFrom = (fallback: [number, number]) => {
+    const p = lastPointer.current;
+    if (p && performance.now() - p.at < 1500) return { x: p.x, y: p.y };
+    return { x: window.innerWidth * fallback[0], y: window.innerHeight * fallback[1] };
+  };
+
   // The last post shown, kept on screen while it animates away after the URL changes.
   const shownPost = useRef<ReactNode>(null);
   const [postOverride, setPostOverride] = useState<ReactNode | null>(null);
@@ -84,6 +118,7 @@ export function Atlas({ data, sea, children }: { data: AtlasData; sea: ReactNode
   // Switching a post in and out of edit mode isn't a navigation between views.
   const routeKey = JSON.stringify(route.kind === "blog" ? { ...route, edit: false } : route);
   const lastRouteKey = useRef(routeKey);
+  const lastRoute = useRef(route);
 
   // Play the design's exit and entrance animations whenever the URL changes,
   // whether from a click or the browser's back and forward buttons. The first
@@ -92,6 +127,8 @@ export function Atlas({ data, sea, children }: { data: AtlasData; sea: ReactNode
   useLayoutEffect(() => {
     if (lastRouteKey.current === routeKey) return;
     lastRouteKey.current = routeKey;
+    const prev = lastRoute.current;
+    lastRoute.current = route;
     clearTimers();
     const from = scene;
     const fromPost = from.view === "blog" || from.view === "transition";
@@ -107,7 +144,7 @@ export function Atlas({ data, sea, children }: { data: AtlasData; sea: ReactNode
       if (fromPost && !from.stateId) {
         // Leaving a post that isn't on the map: there's no state to zoom out of.
         setPostOverride(shownPost.current);
-        set({ ...CALM, exiting: true, toMap: true });
+        set({ ...CALM, exiting: true, wipe: wipeFrom([0.06, 0.03]) });
         later(WIPE, () => {
           toTop();
           setPostOverride(null);
@@ -120,7 +157,7 @@ export function Atlas({ data, sea, children }: { data: AtlasData; sea: ReactNode
         later(STATE_EXIT, () => set({ view: "india", leaving: false, back: true, stateId: null }));
       } else if (fromPost) {
         setPostOverride(shownPost.current);
-        set({ ...CALM, exiting: true, toMap: true });
+        set({ ...CALM, exiting: true, wipe: wipeFrom([0.06, 0.03]) });
         later(WIPE, () => {
           toTop();
           setPostOverride(null);
@@ -136,7 +173,7 @@ export function Atlas({ data, sea, children }: { data: AtlasData; sea: ReactNode
     if (route.kind === "state") {
       if (fromPost) {
         setPostOverride(shownPost.current);
-        set({ ...CALM, exiting: true, toMap: true });
+        set({ ...CALM, exiting: true, wipe: wipeFrom([0.06, 0.03]) });
         later(WIPE, () => {
           toTop();
           setPostOverride(null);
@@ -153,7 +190,23 @@ export function Atlas({ data, sea, children }: { data: AtlasData; sea: ReactNode
     const target = findStop(data, route.tripSlug, route.stopSlug);
     const stop = { tripSlug: route.tripSlug, stopSlug: route.stopSlug };
     const stateId = target?.trip.stateId ?? null;
+    const prevStop = prev.kind === "blog" ? prev : null;
+    if (from.view === "blog" && target && !route.edit && prevStop && !prevStop.edit && prevStop.tripSlug === route.tripSlug) {
+      // Another date on the same trip: cover the post from the link that was pressed, then
+      // pan along the trip's timeline from the old date to the new one and open it.
+      setPostOverride(shownPost.current);
+      set({ ...CALM, wipe: wipeFrom([0.5, 0.06]) });
+      later(WIPE, () => {
+        toTop();
+        setPostOverride(null);
+        set({ ...CALM, view: "transition", stop, stateId, fromSlug: prevStop.stopSlug, paperDelay: DATE_PAPER_AT, phase: 1 });
+      });
+      later(WIPE + PAN_AT, () => set({ phase: 2 }));
+      later(WIPE + DATE_PAPER_AT + PAPER_MS, () => set({ view: "blog", phase: 0, fromSlug: null }));
+      return;
+    }
     if (from.view === "blog") {
+      // Within the editor: a quick fade.
       setPostOverride(shownPost.current);
       set({ ...CALM, exiting: true });
       later(POST_SWAP, () => {
@@ -173,11 +226,12 @@ export function Atlas({ data, sea, children }: { data: AtlasData; sea: ReactNode
     set({ ...CALM, opening: true });
     later(PINS_OUT, () => {
       toTop();
-      set({ ...CALM, view: "transition", stop, phase: 0, stateId });
+      set({ ...CALM, view: "transition", stop, phase: 0, stateId, fromSlug: null, paperDelay: PAPER_AT });
     });
     later(PINS_OUT + 60, () => set({ phase: 1 }));
-    later(1000, () => set({ phase: 2 }));
-    later(2550, () => set({ view: "blog", phase: 0 }));
+    later(PINS_OUT + ZOOM_AT, () => set({ phase: 2 }));
+    // Show the post once the paper circle has filled the screen.
+    later(PINS_OUT + PAPER_AT + PAPER_MS, () => set({ view: "blog", phase: 0 }));
   }, [routeKey, route, scene, data, later, set]);
   /* eslint-enable react-hooks/set-state-in-effect */
 
@@ -199,7 +253,15 @@ export function Atlas({ data, sea, children }: { data: AtlasData; sea: ReactNode
     <>
       {inMap && <MapScene data={data} scene={scene} viewport={viewport} sea={sea} />}
       {scene.view === "transition" && scene.stop && (
-        <TransitionView data={data} stop={scene.stop} phase={scene.phase} onSkip={skipTransition} />
+        <TransitionView
+          data={data}
+          stop={scene.stop}
+          fromSlug={scene.fromSlug}
+          phase={scene.phase}
+          paperDelay={scene.paperDelay}
+          vertical={viewport.mobile ? { height: viewport.height } : null}
+          onSkip={skipTransition}
+        />
       )}
       {scene.view === "blog" && (
         // Only set translate while fading out: any translate makes the post a containing
@@ -212,8 +274,8 @@ export function Atlas({ data, sea, children }: { data: AtlasData; sea: ReactNode
         </div>
       )}
       {scene.view === "other" && children}
-      {scene.view === "blog" && (
-        <div className={styles.wipe} style={{ clipPath: `circle(${scene.toMap ? 150 : 0}% at 6% 3%)` }} />
+      {scene.view === "blog" && scene.wipe && (
+        <div className={styles.wipe} style={{ "--x": `${scene.wipe.x}px`, "--y": `${scene.wipe.y}px` } as CSSProperties} />
       )}
       <Loader visible={!ready} />
     </>

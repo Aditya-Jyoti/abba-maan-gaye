@@ -128,3 +128,6 @@
   font-weight: 600;
   font-size: 15px;
 }
+
+/* Keyframes are scoped to this module, so the ones it uses are defined here. */
+@keyframes ghDrop{0%{opacity:0;translate:0 -50px;scale:1.1}70%{opacity:1;translate:0 4px;scale:.98}100%{opacity:1;translate:0 0;scale:1}}

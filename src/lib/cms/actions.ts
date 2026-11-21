@@ -7,7 +7,7 @@ import { getDb } from "@/db";
 import { media, stopRevisions, stops, trips, users, type StopContent } from "@/db/schema";
 import { getEditor } from "@/lib/auth/session";
 import { CONTENT_TAG, liveContent } from "@/lib/content";
-import { map, stateById, TRIP_COLORS, type Point } from "@/lib/map";
+import { HOME_SLOTS, map, stateById, TRIP_COLORS, type Point } from "@/lib/map";
 import { homeHref, stopEditHref } from "@/lib/routes";
 import { contentImageIds, isIsoDate, isSlug, parseStopContent, slugify } from "./content";
 import { getRevisions, type RevisionSummary, type StopSettings, type TripSettings } from "./queries";
@@ -174,7 +174,7 @@ function checkName(v: unknown, what: string): Checked<string> {
   return { ok: true, value: s };
 }
 
-const checkSlot = (v: unknown): v is number | null => v === null || (Number.isInteger(v) && (v as number) >= 1 && (v as number) <= 6);
+const checkSlot = (v: unknown): v is number | null => v === null || (Number.isInteger(v) && (v as number) >= 1 && (v as number) <= HOME_SLOTS);
 
 function checkPin(v: unknown): v is Point | null {
   if (v === null) return true;
@@ -213,7 +213,7 @@ export async function updateStopSettings(input: { stopId: string; settings: Stop
     return error("Nights must be a whole number up to 365.");
   }
   if (!checkPin(s.pin)) return error("The map pin is off the map.");
-  if (!checkSlot(s.homeSlot)) return error("Pick a home page spot from 1 to 6.");
+  if (!checkSlot(s.homeSlot)) return error(`Pick a home page spot from 1 to ${HOME_SLOTS}.`);
 
   const db = getDb();
   const [current] = await db
@@ -264,7 +264,7 @@ export async function updateTripSettings(input: {
   const dates = checkDates(t.startDate, t.endDate);
   if (!dates.ok) return error(dates.message);
   if (!(Number.isInteger(t.colorIndex) && t.colorIndex >= 0 && t.colorIndex < TRIP_COLORS.length)) return error("Pick a route colour.");
-  if (!checkSlot(t.homeSlot)) return error("Pick a home page spot from 1 to 6.");
+  if (!checkSlot(t.homeSlot)) return error(`Pick a home page spot from 1 to ${HOME_SLOTS}.`);
 
   const db = getDb();
   const [current] = await db.select({ slug: trips.slug, stateId: trips.stateId }).from(trips).where(eq(trips.id, input.tripId));

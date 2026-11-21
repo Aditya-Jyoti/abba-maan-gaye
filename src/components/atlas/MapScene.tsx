@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useMemo, useState, type CSSProperties, type ReactNode } from "react";
+import { useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { Photo } from "@/components/Photo";
 import { ICONS } from "@/components/map/icons";
 import type { AtlasData, AtlasTrip, HomeCard } from "@/lib/content";
@@ -10,11 +10,12 @@ import {
   applyZoom,
   calloutPoints,
   curve,
-  districtsFor,
   LIFT,
   map,
   mapDecor,
   pinLabelY,
+  type PhoneFrame,
+  type Point,
   SEA,
   SOCKET,
   stateById,
@@ -31,25 +32,37 @@ import { homeHref, stateHref } from "@/lib/routes";
 import type { Scene } from "./Atlas";
 import type { Viewport } from "./hooks";
 import styles from "./MapScene.module.css";
+import { slabAnimation } from "./slab";
 
 type Props = { data: AtlasData; scene: Scene; viewport: Viewport; sea: ReactNode };
 
 export function MapScene({ data, scene, viewport, sea }: Props) {
   const router = useRouter();
-  const { mobile } = viewport;
+  const { mobile, short } = viewport;
+  // Phones either way up share the phone map layout (bigger labels, photos in rows or columns).
+  const compact = mobile || short;
   const [hover, setHover] = useState<string | null>(null);
   const [picked, setPicked] = useState<{ stateId: string; slug: string } | null>(null);
 
   const india = scene.view === "india";
   const zoomedId = scene.view === "state" ? scene.stateId : null;
-  const zoom = useMemo(() => (zoomedId ? stateZoom(zoomedId, mobile) : null), [zoomedId, mobile]);
-  const decor = useMemo(() => mapDecor(mobile), [mobile]);
+
+  // The state whose slab has finished flying out. Pins, routes and labels wait for it,
+  // so nothing lands on the state while it's still moving.
+  const [settledId, setSettledId] = useState<string | null>(null);
+  if (settledId && settledId !== zoomedId) setSettledId(null);
+  const settled = !!zoomedId && settledId === zoomedId;
+  const decor = useMemo(() => mapDecor(compact), [compact]);
   const visited = useMemo(() => new Map(data.visited.map((v) => [v.stateId, v])), [data.visited]);
+  const allDistricts = useMemo(() => Object.values(data.districts).join(""), [data.districts]);
 
   const stateTrips = zoomedId ? data.trips.filter((t) => t.stateId === zoomedId) : [];
   const primary =
     stateTrips.find((t) => picked?.stateId === zoomedId && t.slug === picked.slug) ?? stateTrips[0] ?? null;
   const others = stateTrips.filter((t) => t !== primary);
+  const trips = stateTrips.length;
+  const phone = useMemo(() => (compact ? phoneFrame(viewport, trips) : undefined), [compact, viewport, trips]);
+  const zoom = useMemo(() => (zoomedId ? stateZoom(zoomedId, compact, phone) : null), [zoomedId, compact, phone]);
 
   const activeHover = india ? hover : null;
   const hovered = activeHover ? stateById.get(activeHover) : undefined;
@@ -78,8 +91,9 @@ export function MapScene({ data, scene, viewport, sea }: Props) {
         </div>
 
         <div className={styles.mapLayer}>
-          <svg viewBox="0 0 700 800" width="700" height="800" className={styles.svg}>
-            <g className={styles.india} style={indiaStyle}>
+          {/* Transformed as a whole element (not an inner <g>) so it animates on the compositor. */}
+          <svg viewBox="0 0 700 800" width="700" height="800" className={`${styles.svg} ${styles.india}`} style={indiaStyle}>
+            <g>
               <g className={styles.coast}>
                 {(
                   [
@@ -141,6 +155,7 @@ export function MapScene({ data, scene, viewport, sea }: Props) {
                     />
                   );
                 })}
+                <path d={allDistricts} className={styles.indiaDistricts} />
               </g>
 
               {hovered && (
@@ -153,6 +168,7 @@ export function MapScene({ data, scene, viewport, sea }: Props) {
                     transform="translate(0 6)"
                   />
                   <path d={hovered.d} className={styles.liftedTop} fill={stateFill(hovered.hue)} />
+                  {data.districts[hovered.id] && <path d={data.districts[hovered.id]} className={styles.indiaDistricts} />}
                 </g>
               )}
 
@@ -188,7 +204,7 @@ export function MapScene({ data, scene, viewport, sea }: Props) {
                 {l.text}
               </span>
             ))}
-            {!mobile &&
+            {!compact &&
               decor.leads.map((l) => (
                 <span
                   key={l.stateId}
@@ -205,7 +221,17 @@ export function MapScene({ data, scene, viewport, sea }: Props) {
           </div>
         </div>
 
-        {zoomedId && zoom && <StateSlab stateId={zoomedId} zoom={zoom} leaving={scene.leaving} />}
+        {zoomedId && zoom && (
+          <StateSlab
+            key={zoomedId}
+            stateId={zoomedId}
+            zoom={zoom}
+            leaving={scene.leaving}
+            districts={data.districts[zoomedId] ?? ""}
+            settled={settled}
+            onSettled={() => setSettledId(zoomedId)}
+          />
+        )}
 
         {india &&
           data.previews.map((p, i) => (
@@ -233,15 +259,16 @@ export function MapScene({ data, scene, viewport, sea }: Props) {
           </div>
         )}
 
-        {zoomedId && zoom && primary && (
+        {zoomedId && zoom && primary && settled && (
           <StatePins
             stateId={zoomedId}
             zoom={zoom}
             primary={primary}
             others={others}
             hidden={scene.leaving || scene.opening}
-            mobile={mobile}
+            mobile={compact}
             fit={viewport.fitState}
+            phone={phone}
           />
         )}
       </div>
@@ -273,53 +300,91 @@ export function MapScene({ data, scene, viewport, sea }: Props) {
   );
 }
 
+type SlabProps = {
+  stateId: string;
+  zoom: Zoom;
+  leaving: boolean;
+  /** Borders between the state's districts, drawn once it has landed. */
+  districts: string;
+  settled: boolean;
+  onSettled: () => void;
+};
+
+/** How far below the top each layer of the slab's edge sits, in screen px. */
+const SLAB_DEPTH = [6, 4, 2];
+
 /** The zoomed state, lifted out of the map as a thick slab. */
-function StateSlab({ stateId, zoom, leaving }: { stateId: string; zoom: Zoom; leaving: boolean }) {
+function StateSlab({ stateId, zoom, leaving, districts, settled, onSettled }: SlabProps) {
   const st = stateById.get(stateId)!;
   const side = stateSide(st.hue);
-  const depth = leaving
-    ? "ghDepthOut .85s cubic-bezier(.5,0,.3,1) both"
-    : "ghDepth 1.2s cubic-bezier(.3,1.15,.45,1) both";
-  const districts = districtsFor(stateId);
+  const layer = useRef<HTMLDivElement>(null);
+  const onSettledRef = useRef(onSettled);
+  useLayoutEffect(() => {
+    onSettledRef.current = onSettled;
+  });
+
+  // Runs before paint, so the first frame already shows the slab at its starting point.
+  useLayoutEffect(() => {
+    const el = layer.current;
+    if (!el) return;
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const { keyframes, duration } = slabAnimation(zoom, leaving);
+    const anim = el.animate(keyframes, { duration: reduced ? 1 : duration, fill: "both", easing: "linear" });
+    if (!leaving) anim.finished.then(() => onSettledRef.current(), () => {});
+    return () => anim.cancel();
+  }, [zoom, leaving]);
+
+  const clipId = `slab-clip-${stateId}`;
   return (
-    <svg viewBox="0 0 700 800" width="700" height="800" className={styles.slab}>
-      <g
-        className={styles.slabGroup}
-        style={
-          {
-            "--tx": `${zoom.tx.toFixed(1)}px`,
-            "--ty": `${zoom.ty.toFixed(1)}px`,
-            "--k": zoom.k.toFixed(3),
-            animation: leaving
-              ? "ghShrink .85s cubic-bezier(.5,0,.3,1) both"
-              : "ghGrow 1.2s cubic-bezier(.3,1.15,.45,1) both",
-          } as CSSProperties
-        }
-      >
-        {[1, 0.66, 0.33].map((m) => (
-          <path
-            key={m}
-            d={st.d}
-            className={styles.side}
-            fill={side}
-            stroke={side}
-            style={{ "--m": m, animation: depth } as CSSProperties}
-          />
-        ))}
-        <path d={st.d} className={styles.slabTop} fill={stateFill(st.hue)} />
-        {districts && (
-          <path
-            d={districts}
-            className={styles.districts}
-            style={{ animation: leaving ? "ghOut .25s ease both" : "ghIn .5s 1s ease both" }}
-          />
-        )}
-      </g>
-    </svg>
+    <div ref={layer} className={styles.slabLayer}>
+      <svg viewBox="0 0 700 800" width="700" height="800" className={styles.slab}>
+        <g transform={`translate(${zoom.tx.toFixed(2)} ${zoom.ty.toFixed(2)}) scale(${zoom.k.toFixed(4)})`} className={styles.slabGroup}>
+          <clipPath id={clipId}>
+            <path d={st.d} />
+          </clipPath>
+          {SLAB_DEPTH.map((px) => (
+            <path
+              key={px}
+              d={st.d}
+              className={styles.side}
+              fill={side}
+              stroke={side}
+              transform={`translate(0 ${(px / zoom.k).toFixed(3)})`}
+            />
+          ))}
+          <path d={st.d} className={styles.slabTop} fill={stateFill(st.hue)} />
+          {districts && settled && !leaving && (
+            <path d={districts} className={styles.districts} clipPath={`url(#${clipId})`} />
+          )}
+        </g>
+      </svg>
+    </div>
   );
 }
 
 const PIN_TILT = [-5, 4, -3, 6, -4];
+
+/** On phones, how big the photo callouts are relative to the desktop design. */
+const CALLOUT_SIZE = 1.05;
+const CALLOUT_SIZE_SIDEWAYS = 0.9;
+
+/**
+ * The canvas area a phone has free for a state and its photos. Upright: below the back
+ * button and above the trips card (which grows with each trip). On its side: below the
+ * back button and left of the trips card, which sits in the bottom-right corner.
+ */
+function phoneFrame({ fitState: fit, width, height: h, short }: Viewport, trips: number): PhoneFrame {
+  const x = (px: number) => 350 + (px - width / 2) / fit;
+  if (short) {
+    const y = (px: number) => 400 + (px - h / 2) / fit;
+    return { area: [x(12), y(64), x(width - 248), y(h - 8)], scale: CALLOUT_SIZE_SIDEWAYS / fit };
+  }
+  const height = Math.max(h, 680); // .frame's min-height
+  const top = 118;
+  const bottom = 22 + 150 + 34 * Math.max(0, trips - 1) + 12;
+  const y = (px: number) => 400 + (px - height / 2) / fit;
+  return { area: [x(12), y(top), x(width - 12), y(height - bottom)], scale: CALLOUT_SIZE / fit };
+}
 
 type PinsProps = {
   stateId: string;
@@ -329,11 +394,12 @@ type PinsProps = {
   hidden: boolean;
   mobile: boolean;
   fit: number;
+  phone?: PhoneFrame;
 };
 
 /** Route lines, stop pins and photo callouts on the state view. */
-function StatePins({ stateId, zoom, primary, others, hidden, mobile, fit }: PinsProps) {
-  const pinScale = mobile ? (1.05 / fit).toFixed(2) : "1";
+function StatePins({ stateId, zoom, primary, others, hidden, mobile, fit, phone }: PinsProps) {
+  const pinScale = phone ? phone.scale.toFixed(2) : "1";
   const dotScale = mobile ? (0.95 / fit).toFixed(2) : "1";
 
   const pins = primary.stops.flatMap((s) => {
@@ -344,6 +410,7 @@ function StatePins({ stateId, zoom, primary, others, hidden, mobile, fit }: Pins
     stateId,
     pins.map((p) => ({ key: p.stop.placeKey, at: p.at })),
     mobile,
+    phone,
   );
   const otherPins = others.map((t) => ({
     trip: t,
@@ -352,7 +419,19 @@ function StatePins({ stateId, zoom, primary, others, hidden, mobile, fit }: Pins
       return at ? [{ stop: s, at }] : [];
     }),
   }));
-  const cities = stateCities(stateId, zoom, mobile);
+  const cities = stateCities(stateId, zoom, mobile).filter(
+    (c) => !labelHits(c, callouts, pins.map((p) => p.at), Number(pinScale), Number(dotScale)),
+  );
+  // Phones draw everything bigger, so the other trips' names get placed where they fit.
+  const otherLabels = mobile
+    ? placeLabels(
+        otherPins.flatMap((o) => o.pins.map((p) => ({ name: p.stop.name, at: p.at }))),
+        [...pins.map((p) => p.at)],
+        callouts,
+        Number(dotScale),
+        Number(pinScale),
+      )
+    : null;
 
   return (
     <div className={styles.pins} style={{ opacity: hidden ? 0 : 1, transform: `scale(${hidden ? 0.85 : 1})` }}>
@@ -404,13 +483,17 @@ function StatePins({ stateId, zoom, primary, others, hidden, mobile, fit }: Pins
         />
       </svg>
 
-      {otherPins.flatMap(({ trip, pins: ps }) =>
-        ps.map(({ stop, at }) => {
+      {otherPins.flatMap(({ trip, pins: ps }, t) =>
+        ps.map(({ stop, at }, j) => {
+          const placed = otherLabels?.[otherPins.slice(0, t).reduce((n, o) => n + o.pins.length, 0) + j];
           const body = (
             <>
               <span className={styles.otherRing} style={{ borderColor: trip.color }} />
               <span className={styles.otherDot} style={{ background: trip.color }} />
-              <span className={styles.otherName} style={{ top: pinLabelY(stateId, stop.placeKey) }}>
+              <span
+                className={styles.otherName}
+                style={placed ? { left: placed[0], top: placed[1], transform: "none" } : { top: pinLabelY(stateId, stop.placeKey) }}
+              >
                 {stop.name}
               </span>
             </>
@@ -439,7 +522,7 @@ function StatePins({ stateId, zoom, primary, others, hidden, mobile, fit }: Pins
               left: callouts[i][0],
               top: callouts[i][1],
               scale: pinScale,
-              animationDelay: `${1300 + i * 90}ms`,
+              animationDelay: `${150 + i * 90}ms`,
               "--tilt": `${PIN_TILT[i % PIN_TILT.length]}deg`,
             } as CSSProperties
           }
@@ -466,7 +549,7 @@ function StatePins({ stateId, zoom, primary, others, hidden, mobile, fit }: Pins
           tabIndex={-1}
           aria-hidden
           className={styles.pin}
-          style={{ left: at[0], top: at[1], scale: dotScale, animationDelay: `${1100 + i * 90}ms` }}
+          style={{ left: at[0], top: at[1], scale: dotScale, animationDelay: `${i * 90}ms` }}
         >
           <span className={styles.pinPulse} style={{ borderColor: primary.color }} />
           <span className={styles.pinRing} style={{ borderColor: primary.color }} />
@@ -475,6 +558,67 @@ function StatePins({ stateId, zoom, primary, others, hidden, mobile, fit }: Pins
       ))}
     </div>
   );
+}
+
+type Box = [number, number, number, number];
+const overlaps = (a: Box, b: Box) => a[0] < b[2] && b[0] < a[2] && a[1] < b[3] && b[1] < a[3];
+
+/** Whether a reference city's dot or name would sit under a stop's polaroid or pin. */
+function labelHits(
+  c: { name: string; x: number; y: number; left: boolean },
+  callouts: Point[],
+  pins: Point[],
+  pinScale: number,
+  dotScale: number,
+): boolean {
+  // Name is 12px Baloo: about 6.6px a letter, 9px from the dot.
+  const w = (c.name.length * 6.6 + 14) * dotScale;
+  const h = 9 * dotScale;
+  const label: Box = c.left ? [c.x - w, c.y - h, c.x + 5, c.y + h] : [c.x - 5, c.y - h, c.x + w, c.y + h];
+  const cards = callouts.map(([x, y]): Box => [x - 50 * pinScale, y - 52 * pinScale, x + 50 * pinScale, y + 50 * pinScale]);
+  const dots = pins.map(([x, y]): Box => [x - 16 * dotScale, y - 16 * dotScale, x + 16 * dotScale, y + 16 * dotScale]);
+  return [...cards, ...dots].some((b) => overlaps(label, b));
+}
+
+/** Size of a secondary-trip pin label (13px Baloo with padding), in its pin's px. */
+const otherLabelSize = (name: string): [number, number] => [name.length * 7.4 + 12, 18];
+
+/**
+ * Where each secondary-trip pin's name goes, relative to its pin (top-left corner, in the
+ * pin's own px): right of the pin if there's room, else left, below or above, avoiding the
+ * other pins, the photos and the names already placed.
+ */
+function placeLabels(
+  labels: { name: string; at: Point }[],
+  pins: Point[],
+  callouts: Point[],
+  dotScale: number,
+  pinScale: number,
+): Point[] {
+  const ring = 14 * dotScale;
+  const taken: Box[] = [
+    ...[...pins, ...labels.map((l) => l.at)].map(([x, y]): Box => [x - ring, y - ring, x + ring, y + ring]),
+    ...callouts.map(([x, y]): Box => [x - 46 * pinScale, y - 50 * pinScale, x + 46 * pinScale, y + 50 * pinScale]),
+  ];
+  return labels.map(({ name, at }) => {
+    const [w, h] = otherLabelSize(name);
+    const options: Point[] = [
+      [15, -h / 2],
+      [-15 - w, -h / 2],
+      [-w / 2, 14],
+      [-w / 2, -14 - h],
+    ];
+    const boxOf = ([dx, dy]: Point): Box => [
+      at[0] + dx * dotScale,
+      at[1] + dy * dotScale,
+      at[0] + (dx + w) * dotScale,
+      at[1] + (dy + h) * dotScale,
+    ];
+    const cost = (o: Point) => taken.filter((b) => overlaps(boxOf(o), b)).length;
+    const best = options.reduce((m, o) => (cost(o) < cost(m) ? o : m));
+    taken.push(boxOf(best));
+    return best;
+  });
 }
 
 type StateOverlayProps = {
@@ -535,6 +679,8 @@ const SLOTS: Record<
   4: { width: 180, pad: 8, photo: 106, title: 17, rotate: -6, delay: 1.25, tape: { top: -8, right: 24, width: 54, height: 16, rotate: "6deg" }, tapeColor: "green" },
   5: { width: 200, pad: 9, photo: 124, title: 18, rotate: 11, delay: 1.05, tape: { top: -9, left: 66, width: 64, height: 18, rotate: "6deg" }, tapeColor: "yellow" },
   6: { width: 184, pad: 8, photo: 112, title: 17, rotate: -8, delay: 1.2, tape: { top: -8, left: 62, width: 58, height: 16, rotate: "-4deg" }, tapeColor: "pink" },
+  7: { width: 186, pad: 8, photo: 108, title: 17, rotate: -5, delay: 1.3, tape: { top: -8, left: 64, width: 56, height: 16, rotate: "3deg" }, tapeColor: "green" },
+  8: { width: 176, pad: 8, photo: 104, title: 16, rotate: 6, delay: 1.35, tape: { top: -8, left: 22, width: 54, height: 16, rotate: "-6deg" }, tapeColor: "pink" },
 };
 
 const STAMP_CLASSES = [styles.stampRect, styles.stampRound, styles.stampDouble];
@@ -568,9 +714,12 @@ function HomeOverlay({ data, visible, back, onHover }: HomeOverlayProps) {
         <span className={styles.counterLabel}>states visited</span>
       </div>
 
-      {data.cards.map((c) => (
-        <Card key={c.slot} card={c} visible={visible} delay={delay} onHover={onHover} />
-      ))}
+      {/* Scattered around the map on wide screens; in a row above and below it on phones. */}
+      <div className={styles.cards} style={{ pointerEvents: visible ? undefined : "none" }}>
+        {data.cards.map((c) => (
+          <Card key={c.slot} card={c} visible={visible} delay={delay} onHover={onHover} />
+        ))}
+      </div>
     </div>
   );
 }

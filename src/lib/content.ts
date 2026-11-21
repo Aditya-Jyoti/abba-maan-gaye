@@ -1,5 +1,6 @@
 import { and, asc, desc, eq } from "drizzle-orm";
 import { cacheLife, cacheTag } from "next/cache";
+import districtBorders from "@/data/districts.json";
 import { getDb } from "@/db";
 import {
   stops,
@@ -12,7 +13,7 @@ import {
   type StoryBlock,
 } from "@/db/schema";
 import { dateLong, dayMonth, monthYear, stampDay, stampMonth, tripRange } from "@/lib/format";
-import { map, previewSpots, stateName, tripColor, type Point } from "@/lib/map";
+import { HOME_SLOTS, map, previewSpots, stateName, tripColor, type Point } from "@/lib/map";
 import { stateHref, stopHref } from "@/lib/routes";
 
 /** Cache tag for everything derived from trips and stops. */
@@ -67,6 +68,8 @@ export type AtlasData = {
   previews: Preview[];
   cards: HomeCard[];
   trips: AtlasTrip[];
+  /** Borders between districts, by state id (see scripts/build-districts.py). */
+  districts: Record<string, string>;
 };
 
 export async function getAtlasData(): Promise<AtlasData> {
@@ -161,7 +164,7 @@ export async function getAtlasData(): Promise<AtlasData> {
   const seenSlots = new Set<number>();
   const slotted = cards
     .sort((a, b) => a.slot - b.slot)
-    .filter((c) => c.slot >= 1 && c.slot <= 6 && !seenSlots.has(c.slot) && seenSlots.add(c.slot));
+    .filter((c) => c.slot >= 1 && c.slot <= HOME_SLOTS && !seenSlots.has(c.slot) && seenSlots.add(c.slot));
 
   const atlasTrips: AtlasTrip[] = allTrips.map((t) => ({
     slug: t.slug,
@@ -183,7 +186,7 @@ export async function getAtlasData(): Promise<AtlasData> {
     })),
   }));
 
-  return { totalStates: map.states.length, visited, stamps, previews, cards: slotted, trips: atlasTrips };
+  return { totalStates: map.states.length, visited, stamps, previews, cards: slotted, trips: atlasTrips, districts: districtBorders };
 }
 
 /** A stop's pin: where the editor placed it, or its named place from the design. */

@@ -66,6 +66,7 @@
 /* India recedes when a state is zoomed in. */
 .india {
   transform-origin: 350px 420px;
+  will-change: transform, opacity;
   transition:
     transform 0.9s cubic-bezier(0.4, 0, 0.2, 1),
     opacity 0.9s ease;
@@ -95,6 +96,18 @@
   stroke-linejoin: round;
   transition: fill 0.6s;
   outline: none;
+}
+
+/* District borders inside every state on the India map. */
+.indiaDistricts {
+  fill: none;
+  stroke: #fffaf0;
+  stroke-opacity: 0.8;
+  stroke-width: 0.9;
+  stroke-dasharray: 3 2;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+  pointer-events: none;
 }
 
 .lifted {
@@ -227,7 +240,7 @@
   position: absolute;
   right: 46px;
   top: 34px;
-  width: 300px;
+  width: 340px;
   height: 110px;
 }
 
@@ -243,7 +256,7 @@
 }
 
 .stampRect {
-  right: 150px;
+  right: 178px;
   top: 8px;
   padding: 8px 14px 6px;
   border: 2.5px solid rgba(255, 253, 247, 0.9);
@@ -253,10 +266,10 @@
 }
 
 .stampRound {
-  right: 62px;
-  top: -4px;
-  width: 86px;
-  height: 86px;
+  right: 80px;
+  top: -6px;
+  width: 92px;
+  height: 92px;
   border-radius: 50%;
   border: 2.5px dashed rgba(255, 253, 247, 0.9);
   justify-content: center;
@@ -280,9 +293,13 @@
   letter-spacing: 0.1em;
 }
 
+/* Long names have to fit inside the circle. */
 .stampRound .stampName {
-  font-size: 13px;
-  letter-spacing: 0.08em;
+  max-width: 76px;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-align: center;
+  overflow-wrap: anywhere;
 }
 
 .stampDouble .stampName {
@@ -418,12 +435,18 @@
   background: repeating-linear-gradient(90deg, rgba(236, 190, 90, 0.85) 0 5px, rgba(244, 206, 120, 0.85) 5px 10px);
 }
 
+.cards {
+  display: contents;
+}
+
 .slot1 { left: 70px; top: calc(50% - 250px); }
 .slot2 { left: 210px; bottom: 120px; }
 .slot3 { left: 34px; top: calc(50% - 20px); }
 .slot4 { right: 36px; top: calc(50% + 10px); }
 .slot5 { right: 90px; top: 205px; }
 .slot6 { right: 200px; bottom: 110px; }
+.slot7 { right: 600px; top: 44px; }
+.slot8 { right: 250px; top: calc(50% - 110px); }
 
 .srOnly {
   position: absolute;
@@ -436,17 +459,23 @@
 
 /* ---- State view ---------------------------------------------------------- */
 
+/* The slab is drawn zoomed in; this layer carries the fly-out (see slab.ts). */
+.slabLayer {
+  position: absolute;
+  inset: 0;
+  transform-origin: 0 0;
+  will-change: transform;
+  pointer-events: none;
+}
+
 .slab {
   position: absolute;
   inset: 0;
   overflow: visible;
-  pointer-events: none;
 }
 
 .slabGroup {
-  transform: translate(var(--tx), var(--ty)) scale(var(--k));
   filter: drop-shadow(0 18px 16px rgba(20, 50, 50, 0.35));
-  will-change: transform;
 }
 
 .slabTop {
@@ -464,8 +493,10 @@
   vector-effect: non-scaling-stroke;
   stroke-dasharray: 4 3;
   stroke-linejoin: round;
+  animation: ghIn 0.5s ease both;
 }
 
+/* Everything below appears once the slab has landed, so delays count from then. */
 .pins {
   position: absolute;
   inset: 0;
@@ -478,7 +509,7 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
-  animation: ghIn 0.5s 1.1s ease both;
+  animation: ghIn 0.5s 0.15s ease both;
 }
 
 .city {
@@ -515,12 +546,12 @@
   inset: 0;
   pointer-events: none;
   overflow: visible;
-  animation: ghIn 0.5s 1s ease both;
+  animation: ghIn 0.5s ease both;
 }
 
 .otherPin {
   position: absolute;
-  animation: ghIn 0.4s 1.1s ease both;
+  animation: ghIn 0.4s 0.15s ease both;
   color: inherit;
   text-decoration: none;
 }
@@ -551,6 +582,10 @@
   position: absolute;
   left: 15px;
   transform: translateY(-50%);
+  padding: 0 5px;
+  border-radius: 6px;
+  background: rgba(255, 253, 247, 0.82);
+  line-height: 1.35;
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 13px;
@@ -562,9 +597,12 @@
 }
 
 /* Polaroid for each stop of the main trip. */
+/* Centred on its point. The origin keeps it there when phones scale it up (scale applies
+   after the translate, so a centre origin would pull it up and left). */
 .callout {
   position: absolute;
   transform: translate(-50%, -50%);
+  transform-origin: 0 0;
   cursor: pointer;
   animation: ghPop 0.55s both;
   z-index: 2;
@@ -579,7 +617,7 @@
 
 .calloutCard {
   position: relative;
-  width: 72px;
+  min-width: 72px;
   padding: 4px 4px 0;
   background: #fffdf7;
   box-shadow: 0 8px 14px -6px rgba(40, 30, 20, 0.55);
@@ -671,9 +709,11 @@
   border: 2.5px solid #fffaf0;
 }
 
+/* Above the canvas, so the compass and boats in the sea never sit on the trips card. */
 .stateOverlay {
   position: absolute;
   inset: 0;
+  z-index: 3;
   pointer-events: none;
   transition: opacity 0.26s ease;
 }
@@ -823,7 +863,36 @@ button.tripRow:hover .otherTripTitle {
   padding-top: 2px;
 }
 
-@media (max-width: 899px) {
+/* Shorter desktop windows: smaller cards and counter so they don't stack into each other.
+   Under CSS zoom, px offsets are scaled too, so .slot5's top is 160px on screen. */
+@media (min-width: 900px) and (max-height: 820px) {
+  .card {
+    zoom: 0.6;
+  }
+
+  .counter {
+    scale: 0.8;
+    transform-origin: 0 0;
+  }
+
+  .slot5 { top: 267px; }
+}
+
+/* Tablets and narrow windows: the map takes most of the width, so the cards and stamps
+   shrink to keep out of it. */
+@media (min-width: 900px) and (max-width: 1199px) {
+  .card {
+    zoom: 0.58;
+  }
+
+  .stamps {
+    scale: 0.78;
+    transform-origin: 100% 0;
+  }
+}
+
+/* Phones held upright (a phone on its side gets its own layout below; see hooks.ts). */
+@media (max-width: 899px) and (orientation: portrait), (max-width: 899px) and (min-height: 560px) {
   .backButton {
     left: 12px;
     top: 58px;
@@ -844,21 +913,127 @@ button.tripRow:hover .otherTripTitle {
     display: none;
   }
 
+  /* Out of the card rows, on the Bay of Bengal. */
   .counter {
     left: auto;
-    right: -12px;
-    top: 24px;
-    scale: 0.6;
+    right: 6px;
+    top: calc(50% + 4px);
+    scale: 0.5;
+    transform-origin: 100% 0;
+  }
+
+  /* India sits in the middle with four cards in a row above it (1-3 and 7) and four
+     below (4-6 and 8). hooks.ts keeps HOME_ROWS of height clear for them. */
+  .cards {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: auto 1fr auto;
+    justify-items: center;
+    padding: 30px 8px 26px;
   }
 
   .card {
-    zoom: 0.5;
+    zoom: 0.42;
+    position: relative;
   }
 
-  .slot1 { left: 28px; top: 116px; bottom: auto; right: auto; }
-  .slot2 { right: 24px; bottom: 84px; left: auto; top: auto; }
-  .slot3 { left: 24px; bottom: 52px; top: auto; right: auto; }
-  .slot4 { right: 10px; top: calc(50% + 70px); left: auto; bottom: auto; }
-  .slot5 { left: 272px; top: 140px; right: auto; bottom: auto; }
-  .slot6 { left: 264px; bottom: 24px; right: auto; top: auto; }
+  .slot1, .slot2, .slot3, .slot4, .slot5, .slot6, .slot7, .slot8 {
+    inset: auto;
+  }
+
+  .slot1 { grid-area: 1 / 1; align-self: start; }
+  .slot2 { grid-area: 1 / 2; align-self: start; margin-top: 14px; }
+  .slot3 { grid-area: 1 / 3; align-self: start; }
+  .slot7 { grid-area: 1 / 4; align-self: start; margin-top: 12px; }
+  .slot5 { grid-area: 3 / 1; align-self: end; }
+  .slot4 { grid-area: 3 / 2; align-self: end; margin-bottom: 14px; }
+  .slot8 { grid-area: 3 / 3; align-self: end; }
+  .slot6 { grid-area: 3 / 4; align-self: end; margin-bottom: 10px; }
 }
+
+/* A phone on its side: India fills the height, with the cards in two columns either side
+   (1-3 on the left, 4-8 on the right) and the trips card in the bottom-right corner. */
+@media (orientation: landscape) and (max-height: 559px) {
+  .frame {
+    min-height: 0;
+  }
+
+  .border {
+    inset: 6px;
+  }
+
+  .borderDashed {
+    inset: 11px;
+  }
+
+  .stamps {
+    display: none;
+  }
+
+  .counter {
+    left: 14px;
+    top: auto;
+    bottom: 12px;
+    scale: 0.55;
+    transform-origin: 0 100%;
+  }
+
+  .cards {
+    position: absolute;
+    inset: 14px 16px;
+    display: grid;
+    grid-template-columns: auto auto 1fr auto auto;
+    grid-template-rows: repeat(3, auto);
+    align-content: start;
+    align-items: start;
+    gap: 6px 10px;
+  }
+
+  .card {
+    zoom: 0.42;
+    position: relative;
+  }
+
+  .slot1, .slot2, .slot3, .slot4, .slot5, .slot6, .slot7, .slot8 {
+    inset: auto;
+  }
+
+  .slot1 { grid-area: 1 / 1; }
+  .slot2 { grid-area: 1 / 2; }
+  .slot3 { grid-area: 2 / 1; }
+  .slot7 { grid-area: 1 / 4; }
+  .slot5 { grid-area: 1 / 5; }
+  .slot4 { grid-area: 2 / 4; }
+  .slot6 { grid-area: 2 / 5; }
+  .slot8 { grid-area: 3 / 4; }
+
+  .backButton {
+    left: 14px;
+    top: 12px;
+    scale: 0.85;
+    transform-origin: 0 0;
+  }
+
+  /* Small enough to leave the right-hand column of photos clear (see phoneFrame). */
+  .tripsCard {
+    zoom: 0.74;
+    right: 14px;
+    bottom: 12px;
+    max-width: 270px;
+    padding: 10px 14px;
+    gap: 4px;
+  }
+}
+
+/* Keyframes are scoped to this module, so the ones it uses are defined here. */
+@keyframes ghDrop{0%{opacity:0;translate:0 -50px;scale:1.1}70%{opacity:1;translate:0 4px;scale:.98}100%{opacity:1;translate:0 0;scale:1}}
+@keyframes ghFade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes ghIn{from{opacity:0}to{opacity:1}}
+@keyframes ghLift{from{transform:translateY(0)}to{transform:translateY(-11px)}}
+@keyframes ghMapIn{from{opacity:0;transform:translateY(24px) scale(.96)}to{opacity:1;transform:none}}
+@keyframes ghPop{0%{opacity:0;transform:scale(.3) translate(-50%,-50%)}70%{transform:scale(1.08) translate(-50%,-50%)}100%{opacity:1;transform:scale(1) translate(-50%,-50%)}}
+@keyframes ghPulse{0%{transform:scale(.6);opacity:.9}100%{transform:scale(1.6);opacity:0}}
+@keyframes ghStamp{0%{opacity:0;transform:scale(1.8) rotate(-30deg)}60%{opacity:1;transform:scale(.92) rotate(-6deg)}100%{opacity:1;transform:scale(1) rotate(-9deg)}}
+@keyframes ghStampS{0%{opacity:0;scale:1.8}60%{opacity:1;scale:.92}100%{opacity:1;scale:1}}

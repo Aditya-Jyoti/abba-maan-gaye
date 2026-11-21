@@ -890,7 +890,8 @@
             {
               "caption": "Jaisalmer fort walls"
             }
-          ]
+          ],
+          "homeSlot": 7
         }
       ]
     },
@@ -924,7 +925,8 @@
         {
           "slug": "munnar",
           "name": "Munnar",
-          "placeKey": "munnar"
+          "placeKey": "munnar",
+          "homeSlot": 8
         }
       ]
     }

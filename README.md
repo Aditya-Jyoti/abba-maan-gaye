@@ -22,9 +22,10 @@ src/lib/auth/       passwords, sessions, login/logout actions
 src/proxy.ts        sends visitors without a session from edit pages to /login
 src/app/api/health  health check used by Docker (checks the database)
 src/db/             database client and schema
-src/data/           static data (India map geometry from the design)
+src/data/           static data (India map geometry from the design, district borders)
 drizzle/            generated SQL migrations
-scripts/            migrate.mjs (run by the `migrate` container), seed.mjs, create-user.mjs
+scripts/            migrate.mjs (run by the `migrate` container), seed.mjs, create-user.mjs,
+                    build-districts.py (regenerates src/data/districts.json)
 test/               unit tests (node --test)
 public/fonts/       self-hosted Baloo 2 and Mukta
 design/             original design export and its unpacked source

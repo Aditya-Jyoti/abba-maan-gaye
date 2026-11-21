@@ -10,6 +10,7 @@ import type { Photo as PhotoData, StoryBlock } from "@/db/schema";
 import type { Viewer } from "@/lib/auth/session";
 import type { StopPage } from "@/lib/content";
 import { homeHref, stateHref } from "@/lib/routes";
+import { CloseOnOutside } from "./CloseOnOutside";
 import { EditBar } from "./EditBar";
 import styles from "./StopArticle.module.css";
 
@@ -63,6 +64,41 @@ export function StopArticle({ page, viewer, edit, bar }: Props) {
               </div>
             ))}
           </nav>
+
+          {/* Phones: the current stop, with the whole timeline behind a menu button.
+              Keyed by stop so it closes after picking another day; a tap outside closes it too. */}
+          <details key={stop.slug} className={styles.stopsMenu}>
+            <summary className={styles.menuSummary} aria-label={`Stops on ${trip.title}`}>
+              <span className={styles.navText}>
+                <span className={styles.navDate}>
+                  Stop {stop.n} of {stop.total}
+                </span>
+                <span className={styles.navName}>{stop.name}</span>
+              </span>
+              <span className={styles.burger} aria-hidden>
+                <span />
+              </span>
+            </summary>
+            <nav className={styles.menuPanel} aria-label={`Stops on ${trip.title}`}>
+              <span className={styles.menuTrip}>{trip.title}</span>
+              {nav.map((n) => (
+                <Link
+                  key={n.slug}
+                  href={n.href}
+                  scroll={false}
+                  className={styles.menuLink}
+                  aria-current={n.active ? "page" : undefined}
+                >
+                  <span className={n.active ? styles.navDotActive : styles.navDot} />
+                  <span className={styles.navText}>
+                    <span className={styles.navDate}>{n.date}</span>
+                    <span className={styles.navName}>{n.name}</span>
+                  </span>
+                </Link>
+              ))}
+            </nav>
+            <CloseOnOutside />
+          </details>
         </div>
       </header>
 

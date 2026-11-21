@@ -4,12 +4,22 @@
     translate 0.3s ease;
 }
 
-/* Sea-coloured circle that sweeps over a post on the way back to the map. */
+/* Sea-coloured circle that sweeps over a post on the way back to the map, or to another date. */
 .wipe {
   position: fixed;
   inset: 0;
   z-index: 50;
   pointer-events: none;
   background: oklch(0.74 0.075 192);
-  transition: clip-path 0.38s cubic-bezier(0.6, 0, 0.3, 1);
+  animation: wipe 0.45s cubic-bezier(0.6, 0, 0.3, 1) both;
+}
+
+/* Grows from the link that was pressed (--x, --y). */
+@keyframes wipe {
+  from {
+    clip-path: circle(0 at var(--x) var(--y));
+  }
+  to {
+    clip-path: circle(150% at var(--x) var(--y));
+  }
 }
