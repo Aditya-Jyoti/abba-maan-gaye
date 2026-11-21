@@ -820,15 +820,18 @@
   color: #5e4636;
 }
 
+/* Masonry: same-width columns, and each polaroid only as tall as its photo, so mixed
+   portrait and landscape shots stack evenly instead of stretching to a row's height. */
 .gallery {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-  gap: 24px;
+  columns: 150px;
+  column-gap: 24px;
   padding: 0 6px;
 }
 
 .galleryItem {
   position: relative;
+  break-inside: avoid;
+  margin-bottom: 24px;
   padding: 6px 6px 0;
   background: #fffdf7;
   box-shadow: 0 12px 22px -12px rgba(90, 55, 25, 0.5);
