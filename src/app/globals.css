@@ -17,6 +17,9 @@
 
 body {
   min-height: 100vh;
+  /* Tilted polaroids and the drop-in animations can poke a few px past the edge on
+     phones. clip (unlike hidden) keeps the sticky header working. */
+  overflow-x: clip;
   color: var(--ink);
   font-family: var(--font-body);
   font-size: 17px;

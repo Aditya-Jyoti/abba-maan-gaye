@@ -29,4 +29,6 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  /* Where a slot has to crop, keep the upper middle: that's where faces usually are. */
+  object-position: 50% 35%;
 }

@@ -326,16 +326,17 @@
   color: #8a6a52;
 }
 
+/* Grows with the hero photo, which keeps its own proportions once uploaded. */
 .heroPhotos {
   position: relative;
-  height: clamp(300px, 42vw, 440px);
+  min-height: clamp(300px, 42vw, 440px);
+  padding-bottom: 24px;
 }
 
 .heroMain {
   box-sizing: border-box;
-  position: absolute;
-  left: 10px;
-  top: 20px;
+  position: relative;
+  margin: 20px 0 0 10px;
   width: min(380px, 80%);
   padding: 14px 14px 0;
   background: #fffdf7;
@@ -617,10 +618,12 @@
   text-wrap: balance;
 }
 
+/* --ratio is the photo's width / height: a tall photo gets a narrower frame instead of
+   filling the screen. */
 .wide {
   box-sizing: border-box;
-  margin: 8px 0;
-  width: 100%;
+  margin: 8px auto;
+  width: min(100%, calc(72vh * var(--ratio, 10)));
   position: relative;
   padding: 12px 12px 0;
   background: #fffdf7;
@@ -721,7 +724,9 @@
 
 .seeGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+  /* auto-fill, so a lone card stays card-sized instead of stretching across. */
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr));
+  align-items: start;
   gap: 26px;
 }
 
@@ -953,11 +958,11 @@
 
   /* The small photo goes top right, so it can't cover the big one's caption. */
   .heroPhotos {
-    height: 370px;
+    min-height: 370px;
   }
 
   .heroMain {
-    top: 64px;
+    margin-top: 64px;
     width: 86%;
   }
 

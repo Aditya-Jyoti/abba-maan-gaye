@@ -21,7 +21,8 @@ export const CONTENT_TAG = "content";
 
 export type VisitedState = { stateId: string; name: string; summary: string };
 export type Stamp = { stateId: string; name: string; date: string };
-export type Preview = { stateId: string; x: number; y: number; rotate: number };
+/** A tiny polaroid pinned on a visited state on the India map, showing one of its trips. */
+export type Preview = { stateId: string; x: number; y: number; rotate: number; photo: Photo | null };
 
 export type HomeCard = {
   slot: number;
@@ -130,21 +131,22 @@ export async function getAtlasData(): Promise<AtlasData> {
       };
     });
 
+  const tripPhoto = (t: (typeof allTrips)[number]) =>
+    t.coverPhoto ?? stopsOf(t.id).find((s) => s.photos.length)?.photos[0] ?? null;
   const previews: Preview[] = [...byState].flatMap(([stateId, ts]) =>
-    previewSpots(stateId, Math.min(2, ts.length)).map(([x, y, rotate]) => ({ stateId, x, y, rotate })),
+    previewSpots(stateId, Math.min(2, ts.length)).map(([x, y, rotate], i) => ({ stateId, x, y, rotate, photo: tripPhoto(ts[i]) })),
   );
 
   const cards: HomeCard[] = [];
   for (const t of allTrips) {
     if (t.homeSlot == null) continue;
-    const firstPhoto = stopsOf(t.id).find((s) => s.photos.length)?.photos[0];
     cards.push({
       slot: t.homeSlot,
       stateId: t.stateId,
       href: stateHref(t.stateId),
       title: t.title,
       subtitle: `${stateName(t.stateId)}, ${monthYear(t.startDate)}`,
-      photo: t.coverPhoto ?? firstPhoto ?? null,
+      photo: tripPhoto(t),
       color: tripColor(t.colorIndex),
     });
   }

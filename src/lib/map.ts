@@ -203,6 +203,8 @@ const PREVIEW_SPOTS: Record<string, [number, number, number][]> = {
   ],
   rajasthan: [[map.places.jaisalmer[0] + 4, map.places.jaisalmer[1] + 2, -6]],
   kerala: [[map.places.alleppey[0], map.places.alleppey[1] + 2, 6]],
+  // In the open patch right of the palm, clear of the label, the temple icon and the coast.
+  "tamil-nadu": [[265, 720, 6]],
 };
 
 export function previewSpots(stateId: string, count: number): [number, number, number][] {

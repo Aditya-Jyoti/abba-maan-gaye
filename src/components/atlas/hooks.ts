@@ -25,7 +25,7 @@ function measure(): Viewport {
   const short = W > H && H < 560;
   const mobile = W < 900 && !short;
   const fitIndia = mobile
-    ? Math.min(W / 652, (H - 40 - HOME_ROWS) / 800)
+    ? Math.min((W - 8) / 700, (H - 40 - HOME_ROWS) / 800) // the whole canvas, so nothing touches the edges
     : short
       ? (H - 20) / 800
       : Math.max(0.6, Math.min((H - 40) / 800, (W - 64) / 700, 1.3));

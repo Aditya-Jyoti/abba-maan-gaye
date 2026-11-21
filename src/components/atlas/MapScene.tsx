@@ -246,7 +246,7 @@ export function MapScene({ data, scene, viewport, sea }: Props) {
               }}
             >
               <div className={styles.previewFrame}>
-                <Photo photo={null} style={{ height: 24, padding: 0 }} stripe={4} />
+                <Photo photo={p.photo} caption={false} sizes="60px" style={{ height: 24, padding: 0 }} stripe={4} />
               </div>
               <div className={styles.previewTape} />
             </div>

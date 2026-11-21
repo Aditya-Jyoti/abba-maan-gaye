@@ -16,14 +16,17 @@ type Props = {
   style?: CSSProperties;
   /** Overlaid on the photo, e.g. the editor's upload controls. */
   children?: ReactNode;
+  /** Show an uploaded photo whole, at its own proportions, instead of cropping it to the slot. */
+  natural?: boolean;
 };
 
 /** A photo slot: the uploaded image, or the design's striped placeholder until there is one. */
-export function Photo({ photo, caption = true, label, stripe = 6, sizes, className, style, children }: Props) {
+export function Photo({ photo, caption = true, label, stripe = 6, sizes, className, style, children, natural }: Props) {
   const image = photo?.image;
   if (image) {
+    const frameStyle = natural ? { ...style, aspectRatio: `${image.width} / ${image.height}`, height: "auto" } : style;
     return (
-      <div className={className ? `${styles.frame} ${className}` : styles.frame} style={style}>
+      <div className={className ? `${styles.frame} ${className}` : styles.frame} style={frameStyle}>
         {/* Uploads are already resized into fixed widths, so a plain img with srcset is enough. */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img

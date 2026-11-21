@@ -379,10 +379,13 @@ type PicProps = React.ComponentProps<typeof Photo> & {
   onEmpty?: (photo: PhotoData) => void;
 };
 
-/** A photo that can be uploaded or replaced on the edit page. */
+/**
+ * A photo that can be uploaded or replaced on the edit page. Posts show uploaded photos
+ * whole, at their own proportions, so nobody's face gets cropped off.
+ */
 function Pic({ edit, path, onEmpty, photo, ...rest }: PicProps) {
-  if (!edit) return <Photo photo={photo} {...rest} />;
-  return <PhotoSlot edit={edit} photo={photo} onChange={(p) => (photo || !onEmpty ? edit.set(path, p) : onEmpty(p))} {...rest} />;
+  if (!edit) return <Photo photo={photo} natural {...rest} />;
+  return <PhotoSlot edit={edit} photo={photo} natural onChange={(p) => (photo || !onEmpty ? edit.set(path, p) : onEmpty(p))} {...rest} />;
 }
 
 type FigureProps = {
@@ -521,7 +524,10 @@ function Block({ block: b, edit, index }: { block: StoryBlock; edit?: EditApi; i
       );
     case "wide":
       return (
-        <figure className={styles.wide}>
+        <figure
+          className={styles.wide}
+          style={b.photo.image ? ({ "--ratio": b.photo.image.width / b.photo.image.height } as CSSProperties) : undefined}
+        >
           <Pic edit={edit} path={at("photo")} photo={b.photo} label="wide photo" stripe={9} sizes="(max-width: 1100px) 100vw, 1100px" className={styles.wideImage} />
           <Text edit={edit} path={at("photo", "caption")} value={b.photo.caption} as="figcaption" className={styles.wideCaption} label="Caption" placeholder="Caption" />
           <div className={`${styles.tape} ${styles.pink}`} style={{ top: -10, left: "12%", width: 80, height: 20, rotate: "-4deg" }} />
